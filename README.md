@@ -14,7 +14,7 @@ I am not responding for anything that happens to your device, you may download t
 <br><br>
 
 # Downloads
-By downloading this game, I have read the (disclaimer)[https://github.com/IWasAllen/Feed-Yuyuko/blob/main/DISCLAIMER.md] and I know what I'm doing.<br>
+By downloading this game, I have read the [disclaimer](https://github.com/IWasAllen/Feed-Yuyuko/blob/main/DISCLAIMER.md) and I know what I'm doing.<br>
 Latest (Alpha v1.0): https://youtube.com
 <br><br>
 
