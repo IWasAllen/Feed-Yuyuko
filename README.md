@@ -8,13 +8,13 @@ Just don't feed the wrong file!
 
 # Disclaimer
 This game deletes files when feeding it to Yuyuko, therefore it is **NOT YET** sure if it's stable or not<br>
-For more information, click here.<br><br>
+For more information, [click here](https://github.com/IWasAllen/Feed-Yuyuko/blob/main/DISCLAIMER.md).<br><br>
 
 I am not responding for anything that happens to your device, you may download the game at your own risk.
 <br><br>
 
 # Downloads
-By downloading this game, I have read the disclaimer and I know what I'm doing.
+By downloading this game, I have read the (disclaimer)[https://github.com/IWasAllen/Feed-Yuyuko/blob/main/DISCLAIMER.md] and I know what I'm doing.<br>
 Latest (Alpha v1.0): https://youtube.com
 <br><br>
 
