@@ -10,7 +10,7 @@ Just don't feed the wrong file!
 This game deletes files when feeding it to Yuyuko, therefore it is **NOT YET** sure if it's stable or not<br>
 This is just an alpha version, so expect several bugs. For more information, [click here](https://github.com/IWasAllen/Feed-Yuyuko/blob/main/DISCLAIMER.md).
 
-This is not meant to be an actual game, just for video content. Therefore the game's codes is a huge made.
+This is not meant to be an actual game, just for video content. Therefore, it is expected to be boring, and the source code is incredibly messy.
 <br><br>
 
 # Downloads
