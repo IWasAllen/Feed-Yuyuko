@@ -17,6 +17,7 @@ This is not meant to be an actual game, just for video content. Therefore, it is
 By downloading this game, I promise that I have read the [disclaimer](https://github.com/IWasAllen/Feed-Yuyuko/blob/main/DISCLAIMER.md) and I know what I'm doing.<br>
 The developer is not resposible for anything that happens to my device, and I may download the game at my own risk and consent.<br><br>
 
+Make sure to extract them, so it saves the memory file.
 **Latest (Alpha v1.0)**: https://youtube.com
 <br><br>
 
