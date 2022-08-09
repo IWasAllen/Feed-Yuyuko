@@ -1,5 +1,4 @@
-**This is the list of things that will happen when the product is used.**<br>
-**You may decide if you still would use the product after reading the list**<br>
+**You may read the warnings and things that might happen during the game, that may have effects in your device.**<br>
 
 * External Processing
   * Dropping a file to the game will move it to the stomach folder, where it will be deleted after 8 hours.
@@ -11,6 +10,11 @@
   * The spritesheets contains transparency, with a resolution of 6400x1280, between the size of 1 to 2 megabytes.
   * Each time Yuyuko changes emotion state, it loads a specific spritesheet which may spike the fps for few seconds.
   * Centering and scaling resolution works really great, but I did not gave too much effort so it is really messy.
+ 
+  * <details>
+    <summary>Spoiler</summary>
+    When Yuyuko reaches hunger level of zero, the yuyuko assets folder contents gets deleted, except for the stomach folder.
+    </details>
   
  <br><br>
 
