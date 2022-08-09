@@ -10,7 +10,7 @@ Just don't feed the wrong file!
 This game deletes files when feeding it to Yuyuko, therefore it is **NOT YET** sure if it's stable or not<br>
 This is just an alpha version, so expect several bugs. For more information, [click here](https://github.com/IWasAllen/Feed-Yuyuko/blob/main/DISCLAIMER.md).
 
-This is not meant to be an actual game, just for video content. Therefore, it is expected to be boring, and the source code is incredibly messy.
+This is not meant to be an actual game and it's just for video content, but tried my best to make it anyway cause why not? Therefore, it is expected to be boring, and the source code is incredibly messy.
 <br><br>
 
 # Downloads
@@ -18,7 +18,7 @@ By downloading this game, I promise that I have read the [disclaimer](https://gi
 The developer is not resposible for anything that happens to my device, and I may download the game at my own risk and consent.<br><br>
 
 Make sure to extract them, so it saves the memory file.<br>
-**Latest (Alpha v1.0)**: https://youtube.com
+**Latest (Alpha v1.0.0)**: https://github.com/IWasAllen/Feed-Yuyuko/releases/download/v1.0.0-alpha/Feed.Yuyuko.zip
 <br><br>
 
 # Credits
