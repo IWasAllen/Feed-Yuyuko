@@ -25,4 +25,4 @@ The game's source code is really messy, it might not be memory efficient; everyt
 This is not meant to be an actual game and it's just for video content, but tried my best to make it anyway cause why not? Therefore, it is expected to be boring, and the source code is incredibly messy.
 <br><br>
 Big thanks to [LÖVE2D](https://love2d.org) for an awesome framework where this game is programmed.<br>
-Thanks to [oAyaya](https://www.youtube.com/channel/UCImluXeVTzhERT6mtUBglVg) for the textures!<br>
+Thanks to [oAyaya](https://www.youtube.com/channel/UCImluXeVTzhERT6mtUBglVg) for drawing the Yuyuko!<br>
