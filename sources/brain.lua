@@ -20,7 +20,7 @@ local Brain = {}
 function Brain:new()
 
     local class = {}
-    class.memory = {short = {}, long = {}}
+    class.memory = {}
     class.emotion = {happy = 100, stress = 100}
 
     setmetatable(class, self)
@@ -37,12 +37,15 @@ function Brain:push(byte)
     table.insert(self.memory.short, byte)
     
     -- Humans can only remember up to 7 things in short term memory
-    if self.memory
+    if #self.memory.short > 7 then
+        table.insert(self.memory.long, self.memory.short[1])
+        table.remove(self.memory.short, 1)
+    end
 
 end
 
 
-------------------------------------------      ----------------------
+----------------------------------------------------------------      
 function Brain:pop()
 
     table.remove(self.memory.short, #self.memory.short)

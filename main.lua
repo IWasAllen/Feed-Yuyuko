@@ -28,6 +28,7 @@ function love.load()
     love.graphics.setDefaultFilter("linear", "linear")
 
     Yuyuko:init()
+Yuyuko:speak("What would it be to take that when it realize\nyou can't really have anything that may have been able\nto do so.", 16)
 
 end
 
@@ -39,7 +40,7 @@ function love.draw()
     love.graphics.push()
         love.graphics.translate(love.graphics.getWidth() / 2, love.graphics.getHeight() - 320)
 
-        --Yuyuko:draw()
+        Yuyuko:draw()
     love.graphics.pop()
 
 end

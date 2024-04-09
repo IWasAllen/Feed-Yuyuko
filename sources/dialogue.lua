@@ -2,20 +2,19 @@ local Dialogue = {}
 
 
 ----------------------------------------------------------------
-local function getNoisedIndex(maxIndex, time, seed)
+local function getNoisedInteger(max_integer, time, seed)
 
     local noise = love.math.noise(time / 4, seed)
 
-    local index = noise * maxIndex + 1
+    local integer = noise * max_integer
 
     -- Adding variety for complex but catchy sounding
     local variety = love.math.noise(noise * 64 , seed * 2) * 2 - 1
+    --print(string.format("%.2f, (%+.2f): %s", integer, variety, string.rep('#', integer + variety)))
 
-    index = index + variety
+    integer = integer + variety
 
-    --print(string.format("%.2f, (%+.2f): %s", index, variety, string.rep('#', index)))
-
-    return math.floor(math.max(1, math.min(maxIndex, index)))
+    return math.floor(math.max(1, math.min(max_integer, integer)))
 
 end
 
@@ -32,7 +31,7 @@ function Dialogue:new(font_filename, sound_filename)
     class.content = ""
     class.progress = 1.0
     class.speed = 1.0
-    class.previous_index = 0 -- used to play sfx when the text is updated
+    class.previous_index = 0 -- used to play sfx when the dialogue is playing
 
     setmetatable(class, self)
     self.__index = self
@@ -63,15 +62,15 @@ function Dialogue:update(deltaTime)
 
     self.progress = self.progress + deltaTime * self.speed
 
-    local index = math.floor(self.progress)
-    self.text:set(self.content:sub(1, self.progress))
+    local current_index = math.floor(self.progress)
+    self.text:set(self.content:sub(1, current_index))
 
     -- Playing sound when the text updates
-    if index ~= self.previous_index and self.content:sub(index, index) ~= ' ' then
-        self.previous_index = index
+    if current_index ~= self.previous_index and self.content:sub(current_index, current_index) ~= ' ' then
+        self.previous_index = current_index
 
         -- Play random pitch
-        local pitch = self.pitches[getNoisedIndex(#self.pitches, index, #self.content)]
+        local pitch = self.pitches[getNoisedInteger(#self.pitches, current_index, #self.content)]
         self.sound:setPitch(pitch)
 
         self.sound:play()
