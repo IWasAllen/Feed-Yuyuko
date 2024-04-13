@@ -7,13 +7,19 @@ local English = {
                 "I'm already full now.",
             },
             ["normal_file"] = {
-                "What a great file.",
-                "So delicious."
+                "What a great file!",
+                "So delicious!",
+                "Fresh file, %savor%!"
             },
             ["bad_file"] = {
                 "%disgust%, I don't like that file!",
                 "%disgust%, taste so bad!",
                 "No, %disgust%!"
+            },
+            ["good_file"] = {
+                "%amaze%, I like that!",
+                "So yummy! I wan't more of it.",
+                "%amaze%, it's so good!"
             },
             ["hungry"] = {
                 "I want some more please!",
@@ -28,7 +34,7 @@ local English = {
     },
 
     ["awareness"] = {
-        ["less_repetition"] = {
+        ["few_occurence"] = {
             ["same_file"] = {
                 "I want something else.",
                 "Could I have a different file?"
@@ -37,8 +43,13 @@ local English = {
                 "%whine%! I don't want such files. Stop it!",
                 "%disgust%, you're teasing me aren't you?",
             },
+            ["good_file"] = { -- blue scale
+                "%amaze%, that was a great meal!",
+                "%amaze%, good meals overload!",
+                "%amaze%ahaahahaHha, %savor%~!"
+            },
             ["empty_file"] = {
-                "I want a full file.",
+                "I want a big file.",
                 "I do not want empty files."
             },
             ["puking"] = {
@@ -47,10 +58,14 @@ local English = {
             }
         },
 
-        ["frequent_repetition"] = {
+        ["frequent_occurence"] = {  -- whole tone scale
             ["bad_file"] = {
-                "%scream%! I don't want it I don't want iitt!!",
+                "%scream%! I don't want it I don't want iitt!",
                 "%disgust%, what are you doing? %whine%!",
+            },
+            ["good_file"] = { -- blue scale
+                "%amaze%, t-too much yummy files!",
+                "%scream%! Addiction!",
             },
         },
 
@@ -60,6 +75,11 @@ local English = {
     },
 
     ["interjections"] = {
+        ["amaze"] = {
+            "Uwaah!",
+            "Waah!",
+            "Aawooww!"
+        },
         ["appreciate"] = {
             "Thanks!",
         },
@@ -74,6 +94,11 @@ local English = {
             "Hmph.",
             "Hmph!",
             "Tsk."
+        },
+        ["laugh"] = {
+            "Hahahaha!",
+            "Ahahaa!",
+            "Hahah!"
         },
         ["savor"] = {
             "Yummy!",
@@ -100,10 +125,18 @@ local English = {
 
 
 ----------------------------------------------------------------
-function English:castInterjection(str)
+local function getRandomPhrase(array)
+
+    return array[math.random(1, #array)]
+
+end
+
+
+----------------------------------------------------------------
+local function castInterjection(str)
 
     for match in str:gmatch("%%(.-)%%") do
-        local phrase = self:getRandomPhrase(self.interjections[match])
+        local phrase = getRandomPhrase(self.interjections[match])
 
         phrase = phrase:sub(1, #phrase - 1) -- removes end punctuation
 
@@ -114,9 +147,9 @@ end
 
 
 ----------------------------------------------------------------
-function English:getRandomPhrase(array)
+function English.get(group)
 
-    return array[math.random(1, #array)]
+    return castInterjection(getRandomPhrase(group))
 
 end
 

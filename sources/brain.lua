@@ -20,7 +20,7 @@ local Brain = {}
 function Brain:new()
 
     local class = {}
-    class.memory = {}
+    class.memory = {short = {}, long = {}}
     class.emotion = {happy = 100, stress = 100}
 
     setmetatable(class, self)
@@ -49,7 +49,7 @@ end
 function Brain:pop()
 
     table.remove(self.memory.short, #self.memory.short)
-
+    
 end
 
 

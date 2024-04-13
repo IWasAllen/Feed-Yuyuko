@@ -1,30 +1,24 @@
+local dir = "assets/characters/yuyuko/"
+
 local Brain = require("sources/brain"):new()
 
 local Character = require("sources/character")
 
-local Dialogue = require("characters/yuyuko/dialogue/english")
+local Dialogue = loadfile(dir .. "dialogue/english")
 
 
 ----------------------------------------------------------------
 -- Private
 ----------------------------------------------------------------
-local m_texture_puke = love.graphics.newImage("characters/yuyuko/textures/tears.png")
-local m_texture_tears = love.graphics.newImage("characters/yuyuko/textures/puke.png")
+local m_texture_puke = love.graphics.newImage(dir .. "textures/puke.png")
+local m_texture_tears = love.graphics.newImage(dir .. "textures/tears.png")
 
 local m_particle_puke = love.graphics.newParticleSystem
 local m_particle_tears = love.graphics.newParticleSystem
 
 
 ----------------------------------------------------------------
-local MAJOR_SCALE_PITCH = {1.00, 1.12, 1.25, 1.33, 1.49, 1.68, 1.88, 2.00}
-local MINOR_SCALE_PITCH = {1.00, 1.12, 1.18, 1.33, 1.49, 1.58, 1.88, 2.00}
-local WHOLE_SCALE_PITCH = {1.00, 1.12, 1.25, 1.41, 1.58, 1.78, 2.00}
-local BLUES_SCALE_PITCH = {1.00, 1.18, 1.33, 1.41, 1.49, 1.78, 2.00}
-local KLEZMER_SCALE_PTICH = {1.00, 1.05, 1.25, 1.33, 1.49, 1.58, 1.78, 2.00}
-
-
-----------------------------------------------------------------
-local Bytes = {
+local BYTES = {
     ["idle"]             = 0,
     ["left_short"]       = 1,
     ["left_medium"]      = 2,
@@ -40,17 +34,18 @@ local Bytes = {
 ----------------------------------------------------------------
 -- Public
 ----------------------------------------------------------------
-local Yuyuko = Character:new("characters/yuyuko")
+local Yuyuko = Character:new(dir)
 
 
 ----------------------------------------------------------------
 function Yuyuko:init()
 
-    Character.init(self)
+    print("Yuyuko init() called!")
 
-    self.resources.dialogue:setPitches(MINOR_SCALE_PITCH)
-    --------
+    Character.init(self, {76, 276}, {430, 830}, {276, 476}, {910, 480})
 
+    self.resources.dialogue:tone("minor")
+    
 
 end
 
@@ -72,38 +67,30 @@ function Yuyuko:update(deltaTime)
    Character.update(Yuyuko, deltaTime)
    
     if love.keyboard.isDown("w") then
-        if debounce1 then
-            return
-        end
+        if not debounce1 then
+            debounce1 = true
 
-        debounce1 = true
-        
-        Brain:push(1)
-        local classified = Brain:analyze(1)
-        print("1")
-        
+            Brain:push(1)
+            local classified = Brain:analyze(1)
+            print("Pushed 1")
+            Yuyuko:speak("Hello, world!\nWhat life had come through?")
+        end
     else
         debounce1 = false
     end
 
-    if love.keyboard.isDown("e") then
-        if debounce2 then
-            return
-        end
+    if love.keyboard.isDown("d") then
+        if not debounce2 then
+            debounce2 = true
 
-        debounce2 = true
-        
-        Brain:push(0)
-        local classified = Brain:analyze(1)
-        print("0")
-        
+            Brain:push(0)
+            local classified = Brain:analyze(1)
+            print("Pushed 0")
+        end
     else
         debounce2 = false
     end
-    
-    
-    
-
+ 
 end
 
 

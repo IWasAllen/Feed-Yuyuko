@@ -1,4 +1,4 @@
-local Yuyuko = require("characters/yuyuko/yuyuko")
+local Yuyuko = require("assets/characters/yuyuko/yuyuko")
 
 
 ----------------------------------------------------------------
@@ -8,7 +8,6 @@ local original_resolution_y = 720
 local scale_resolution_x = love.graphics.getWidth() / original_resolution_x
 local scale_resolution_y = love.graphics.getHeight() / original_resolution_y
 
--- add game.lua, which handles screen shaking, bgm, vignette, etc.
 
 ----------------------------------------------------------------
 function love.load()
@@ -22,13 +21,12 @@ function love.load()
         )
     love.graphics.present();
 
-    -- Initialization
+    -- Initialize Graphcs
     love.graphics.setBackgroundColor(255, 255, 255)
-
     love.graphics.setDefaultFilter("linear", "linear")
 
+    -- Initialize Game
     Yuyuko:init()
-Yuyuko:speak("What would it be to take that when it realize\nyou can't really have anything that may have been able\nto do so.", 16)
 
 end
 
@@ -36,9 +34,11 @@ end
 ----------------------------------------------------------------
 function love.draw()
 
-    -- Drawing Yuyuko in the center
+    -- Drawing Yuyuko
     love.graphics.push()
-        love.graphics.translate(love.graphics.getWidth() / 2, love.graphics.getHeight() - 320)
+
+        -- Centering Yuyuko and anchoring at the bottom
+        love.graphics.translate(love.graphics.getWidth() / 2, love.graphics.getHeight() - 160)
 
         Yuyuko:draw()
     love.graphics.pop()
