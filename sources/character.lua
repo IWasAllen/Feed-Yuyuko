@@ -34,13 +34,21 @@ function Character:init(eyes_position, mouth_position, left_eyebrow_position, ri
     self.resources.image_eyebrow           = love.graphics.newImage(self.directory .. "textures/eyebrow.png")
     self.resources.sprite_eyes             = Spritesheet:new(self.directory .. "textures/eyes.png", 1024, 1024)
     self.resources.sprite_mouth            = Spritesheet:new(self.directory .. "textures/mouths.png", 256, 256)
-
+    
     -- Initialize text dialogue
     self.resources.dialogue = Dialogue:new(self.directory .. "dialogue/font.ttf", self.directory .. "dialogue/voice.wav")
     self.resources.dialogue.font:setFilter("nearest", "nearest")
 
     -- Caches
     self.origin = { -self.resources.image_base:getWidth() / 2, -self.resources.image_base:getHeight() / 2 }
+
+end
+
+
+----------------------------------------------------------------
+function Character:face(TODO)
+
+
 
 end
 
@@ -119,18 +127,6 @@ function Character:draw()
         self.resources.dialogue:draw()
         love.graphics.setColor(1, 1, 1)
     love.graphics.pop()
-
-end
-
-
-----------------------------------------------------------------
-function Character:face(state)
-
-    -- Delete previous face texture
-    self.resources.texture_face:release()
-
-    -- Load the new face image in the character/faces/x.png whereas 'x' is the parameter 'state'
-    self.resources.texture_face = love.graphics.newImage(self.directory .. "textures/faces/" .. state .. ".png")
 
 end
 

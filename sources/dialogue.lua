@@ -8,11 +8,11 @@ local Dialogue, Pitches = {}, {
 
 
 ----------------------------------------------------------------
-local function getNoisedPitchIndex(array, time, seed)
+local function getNoisedPitchIndex(pitches, time, seed)
 
     local noise = love.math.noise(time / 4, seed)
 
-    local index = noise * #array
+    local index = noise * #pitches
 
     -- Adding variety for complex and catchy sounding
     local variety = love.math.noise(noise * 64 , seed * 2) * 2 - 1
@@ -21,7 +21,7 @@ local function getNoisedPitchIndex(array, time, seed)
 
     index = index + variety 
 
-    return array[math.floor(math.max(1, math.min(#array, index)))]
+    return pitches[math.floor(math.max(1, math.min(#pitches, index)))]
 
 end
 
@@ -38,7 +38,7 @@ function Dialogue:new(font_filename, sound_filename)
     class.content = ""
     class.progress = 1.0
     class.speed = 1.0
-    class.previous_index = 0 -- used to check when the text changes for playing sfx
+    class.previous_index = 0 -- used to check when the text changes, for playing a sound
 
     setmetatable(class, self)
     self.__index = self

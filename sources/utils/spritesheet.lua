@@ -75,7 +75,7 @@ function Spritesheet:play(start_column, end_column, duration)
             self.speed = -math.abs(self.speed)
         end
     end
-    
+
 end
 
 
