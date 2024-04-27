@@ -1,3 +1,5 @@
+local TweenHandler = require("sources/engine/tweenhandler")
+
 local Yuyuko = require("assets/characters/yuyuko/yuyuko")
 
 
@@ -52,6 +54,8 @@ end
 ----------------------------------------------------------------
 function love.update(dt)
 
+    TweenHandler.update(dt)
+    
     Yuyuko:update(dt)
 
 end

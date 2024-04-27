@@ -46,9 +46,9 @@ end
 
 
 ----------------------------------------------------------------
-function Character:face(TODO)
+function Character:face(state)
 
-
+    self.resources.sprite_mouth:row(state)
 
 end
 
@@ -56,8 +56,8 @@ end
 ----------------------------------------------------------------
 function Character:speak(text, speed)
 
-    self.resources.dialogue:play(text, speed or 16)
-    self.resources.sprite_mouth:play(2, 1, 0.35)
+    self.resources.dialogue:play(text, speed)
+    self.resources.sprite_mouth:play(2, 1, 0.5)
 
 end
 
@@ -78,7 +78,7 @@ function Character:update(deltaTime)
 
     do -- Speak
         if self.resources.dialogue:done() then
-            self.resources.sprite_mouth:stop()
+           self.resources.sprite_mouth:stop()
         end
     end
 
