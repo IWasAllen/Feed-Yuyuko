@@ -125,15 +125,15 @@ local English = {
 
 
 ----------------------------------------------------------------
-local function getRandomPhrase(array)
-
+function English.getRandomPhrase(array)
+    
     return array[math.random(1, #array)]
 
 end
 
 
 ----------------------------------------------------------------
-local function castInterjection(str)
+function English.castInterjection(str)
 
     for match in str:gmatch("%%(.-)%%") do
         local phrase = getRandomPhrase(self.interjections[match])

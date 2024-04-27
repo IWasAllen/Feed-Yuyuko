@@ -36,18 +36,13 @@ local BYTES = {
 ----------------------------------------------------------------
 local Yuyuko = Character:new(dir)
 
-local tween1 = nil
-local tween2 = TweenHandler:new(function(x, y)
-
-end)
-
 
 ----------------------------------------------------------------
 function Yuyuko:init()
 
     print("Yuyuko init() called!")
 
-    Character.init(self, {76, 276}, {430, 830}, {276, 476}, {910, 480})
+    Character.init(self, {76, 276}, {430, 830}, {276, 476}, {640, 470})
 
     self.resources.dialogue:tone("minor")
 
@@ -68,7 +63,8 @@ local debounce1 = false
 local debounce2 = false
 
 function Yuyuko:update(deltaTime)
-   Character.update(Yuyuko, deltaTime)
+
+   Character.update(self, deltaTime)
 
     -- Debugging keyboard press
     if love.keyboard.isDown("w") then
@@ -78,6 +74,7 @@ function Yuyuko:update(deltaTime)
             Brain:push(1)
             local classified = Brain:analyze(1)
             print("Pushed 1")
+            Yuyuko.resources.tween_eyebrows:play({0, 0, math.rad(5), -32, 0, math.rad(5)}, "backOut", 1)
         end
     else
         debounce1 = false
