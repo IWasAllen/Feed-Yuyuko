@@ -87,6 +87,7 @@ function Yuyuko:update(deltaTime)
             Brain:push(0)
             local classified = Brain:analyze(1)
             print("Pushed 0")
+            Yuyuko:speak("Hi world", 8)
         end
     else
         debounce2 = false

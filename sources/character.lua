@@ -13,6 +13,8 @@ function Character:new(character_directory)
     local class = {}
     class.directory = character_directory .. '/'
     class.resources = {locations = {}}
+    class.state = "idle"
+    class.state_locked = false
 
     setmetatable(class, self)
     self.__index = self
@@ -40,15 +42,17 @@ function Character:init(eyes_position, mouth_position, left_eyebrow_position, ri
     -- Initialize tween class
     self.resources.tween_eyebrows = TweenHandler:new(function(x1, y1, r1, x2, y2, r2)
     
-    end, 0, 0, 0, 0, 0, 0)
+    end)
 
     -- Initialize text dialogue
     self.resources.dialogue = Dialogue:new(self.directory .. "dialogue/font.ttf", self.directory .. "dialogue/voice.wav")
     self.resources.dialogue.font:setFilter("nearest", "nearest")
-    
+
+    -- Others
+    self.blinkcooldown = 1.0
+
     -- Caches
     self.origin = { -self.resources.image_base:getWidth() / 2, -self.resources.image_base:getHeight() / 2 }
-    self.blinkcooldown = 1.0
 
 end
 
@@ -73,39 +77,21 @@ end
 ----------------------------------------------------------------
 function Character:update(deltaTime)
 
-    -- Dialogue
+    -- Internal Resource Updates
     self.resources.dialogue:update(deltaTime)
-
-
-    -- Sprites
-
-    do -- Blinking
-        self.blinkcooldown = self.blinkcooldown - deltaTime
-
-        if self.blinkcooldown <= 0.00 and self.blinkcooldown > -1.00 then
-            self.blinkcooldown = -1.00 -- debounce
-            self.resources.sprite_eyes:play(1, 3, 0.25)
-        
-        elseif self.blinkcooldown > -2.00 and self.blinkcooldown <= -1.20 then
-            self.blinkcooldown = -2.00 -- debounce  
-            self.resources.sprite_eyes:play(3, 1, 0.25)
-
-        elseif self.blinkcooldown < -2.20 then
-            self.blinkcooldown = math.random(0, 10)
-            self.resources.sprite_eyes:play(1, 1, 1)
-
-        end
-    end
-
-    do -- Speak
-        if self.resources.dialogue:done() then
-           self.resources.sprite_mouth:stop()
-        end
-    end
-
     self.resources.sprite_eyes:update(deltaTime)
     self.resources.sprite_mouth:update(deltaTime)
-    
+
+    -- Character States
+    if self.state == "speaking" and self.resources.dialogue:done() then
+        self.statelocked = false
+        self.resources.sprite_mouth:stop()
+    end
+
+    if not self.statelocked then
+        self.state = "idle"
+    end
+
 end
 
 

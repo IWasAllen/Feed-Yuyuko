@@ -14,10 +14,11 @@ function Spritesheet:new(image_filename, frame_width, frame_height)
     class.speed = 1.0
     class.progress = 0.0
 
-    -- Slices rows into quads
+    -- Slices each rows into quads
     for i = 0, class.image:getHeight() - frame_height, frame_height do
         local row = i / frame_height + 1
         class.quads[row] = {}
+
         for j = 0, class.image:getWidth() - frame_width, frame_width do
             table.insert(class.quads[row], love.graphics.newQuad(
                 j,
@@ -40,8 +41,10 @@ end
 ----------------------------------------------------------------
 Spritesheet.__call = function(self)
 
+    local column = math.floor(self.column_start + (self.column_end - self.column_start) * self.progress)
+
     -- Shortcut for retrieving the image and quad for love.graphics.draw()
-    return self.image, self.quads[self.current_row][math.floor(self.progress) + self.column_start]
+    return self.image, self.quads[self.current_row][column]
 
 end
 
@@ -52,19 +55,16 @@ function Spritesheet:play(start_column, end_column, duration)
     self.progress = 0.0
 
     if duration then
-        -- Total frames * frames per second
-        self.speed = (math.abs(end_column - start_column) + 1) * (1 / duration)
+        self.speed = 1 / duration
     end
 
-    -- Check if the animation should play in reverse    
+    -- Offseting extra column for the lerp in .__call() to substitute total frames when calculating the difference between.
     if start_column < end_column  then
-        self.column_start = start_column
-        self.column_end   = end_column
-        self.speed = math.abs(self.speed)
+        self.column_start = start_column 
+        self.column_end   = end_column + 1
     else
-        self.column_start = end_column
-        self.column_end   = start_column
-        self.speed = -math.abs(self.speed)
+        self.column_start = start_column + 1
+        self.column_end   = end_column
     end
 
 end
@@ -89,10 +89,7 @@ end
 ----------------------------------------------------------------
 function Spritesheet:update(deltaTime)
 
-    self.progress = (self.progress + deltaTime * self.speed) 
-
-    -- Snap the progress by the total frames
-    % (self.column_end - self.column_start + 1)
+    self.progress = (self.progress + deltaTime * self.speed) % 1
 
 end
 
