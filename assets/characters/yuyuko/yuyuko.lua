@@ -36,13 +36,15 @@ local BYTES = {
 ----------------------------------------------------------------
 local Yuyuko = Character:new(dir)
 
+-- Todo on wobble animation has progress. 1 = wobbled down, 0 = normal.
+-- so that when speaking, tween progress back adn foruhtt 0 to 1
 
 ----------------------------------------------------------------
 function Yuyuko:init()
 
     print("Yuyuko init() called!")
 
-    Character.init(self, {76, 276}, {430, 830}, {276, 476}, {640, 470})
+    Character.init(self, {76, 276}, {430, 830}, {276, 476}, {680, 470})
 
     self.resources.dialogue:tone("minor")
 
@@ -74,7 +76,7 @@ function Yuyuko:update(deltaTime)
             Brain:push(1)
             local classified = Brain:analyze(1)
             print("Pushed 1")
-            Yuyuko.resources.tween_eyebrows:play({0, 0, math.rad(5), -32, 0, math.rad(5)}, "backOut", 1)
+            Yuyuko:emotion("disgust")
         end
     else
         debounce1 = false
@@ -87,7 +89,8 @@ function Yuyuko:update(deltaTime)
             Brain:push(0)
             local classified = Brain:analyze(1)
             print("Pushed 0")
-            Yuyuko:speak("Hi world", 8)
+            Yuyuko.resources.sprite_mouth:stop()
+
         end
     else
         debounce2 = false

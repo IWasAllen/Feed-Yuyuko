@@ -114,8 +114,8 @@ end
 
 ----------------------------------------------------------------
 local function bounceOut(progress)
-    local n1 = 7.5625
-    local d1 = 2.7500
+    local n1 = 7.56250
+    local d1 = 2.75000
 
     if progress < 1 / d1 then
         return n1 * progress * progress
@@ -144,48 +144,36 @@ end
 
 ----------------------------------------------------------------
 local EnumStyles = {
-    linear    = function(x) return x end,
-    
-    sineIn      = sineIn,
-    sineOut     = sineOut,
-    sineInOut   = sineInOut,
+    sineIn      = sineIn;
+    sineOut     = sineOut;
+    sineInOut   = sineInOut;
 
-    quadIn      = quadIn,
-    quadOut     = quadOut,
-    quadInOut   = quadInOut,
+    quadIn      = quadIn;
+    quadOut     = quadOut;
+    quadInOut   = quadInOut;
 
-    cubicIn     = cubicIn,
-    cubicOut    = cubicOut,
-    cubicInOut  = cubicInOut,
+    cubicIn     = cubicIn;
+    cubicOut    = cubicOut;
+    cubicInOut  = cubicInOut;
 
-    quartIn     = quartIn,
-    quartOut    = quartOut,
-    quartInOut  = quartInOut,
+    quartIn     = quartIn;
+    quartOut    = quartOut;
+    quartInOut  = quartInOut;
 
-    backIn      = backIn,
-    backOut     = backOut,
-    backInOut   = backInOut,
+    backIn      = backIn;
+    backOut     = backOut;
+    backInOut   = backInOut;
 
-    bounceIn    = bounceIn,
-    bounceOut   = bounceOut,
-    bounceInOut = bounceInOut
+    bounceIn    = bounceIn;
+    bounceOut   = bounceOut;
+    bounceInOut = bounceInOut;
+
+    linear      = function(x) return x end;
 }
 
 
 ----------------------------------------------------------------
--- Helper functions
-----------------------------------------------------------------
-local function memcpy(array1, array2)
-
-    for i = 1, #array1 do
-       array1[i] = array2[i] 
-    end
-
-end
-
-
-----------------------------------------------------------------
--- Tween class
+-- Tween Class (Singleton)
 ----------------------------------------------------------------
 local TweenHandler, m_tweenset = {}, {}
 
@@ -216,19 +204,17 @@ function TweenHandler:new(callback, ...)
 
 end
 
+
 ----------------------------------------------------------------
 function TweenHandler:play(target_values, style, duration)
 
-    -- Reset start values to current values
+    self.progress = 0.00
+
+    -- Sets the tween properties
     for i = 1, #self.values_start do
         self.values_start[i] = self[i]
+        self.values_end[i] = target_values[i]
     end
-
-    -- Resets progress
-    self.progress = 0.0
-
-    -- Resets the tween properties
-    memcpy(self.values_end, target_values)
 
     self.speed = 1 / duration
     self.style = style
@@ -242,25 +228,28 @@ end
 ----------------------------------------------------------------
 function TweenHandler.update(deltaTime)
 
+    -- Iterate through playing tween objects
     for i, v in pairs(m_tweenset) do
-        v.progress = v.progress + v.speed * deltaTime
+        v.progress = v.progress + deltaTime * v.speed
 
-        -- Interpolation
-        for i = 1, debug.getinfo(v.callback).nparams do
-            if v.progress < 1.0 then
-                v[i] = v.values_start[i] + EnumStyles[v.style](v.progress) * (v.values_end[i] - v.values_start[i])
+        -- Iterate through each variables
+        for i = 1, #v do
+
+            -- Linear Interpolation
+            if v.progress < 1.0 then 
+                v[i] = v.values_start[i] + (v.values_end[i] - v.values_start[i]) * EnumStyles[v.style](v.progress)
+
+            -- Finalization
             else
                 v[i] = v.values_end[i]
+                v.progress = 1.0
+
+                -- Remove itself from the set
+                m_tweenset[tostring(v)] = nil
             end
         end
-        
+
         v.callback(unpack(v))
-        
-        
-        if v.progress >= 1.0 then
-            v.progress = 1.0
-            m_tweenset[tostring(v)] = nil
-        end
     end
 
 end

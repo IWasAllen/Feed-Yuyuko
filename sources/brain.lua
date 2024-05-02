@@ -11,7 +11,8 @@ local Kernels = {
     {-1.0, -1.0,  1.0, -1.0, -1.0}, -- rare occurence
 }
 
-
+-- TODO: takes inputs of Short Term Memory, and Long Term Memory (CNN'ed) with filters like starting repetition, occurences.
+-- Then genetic algorthm
 ----------------------------------------------------------------
 local Brain = {}
 
