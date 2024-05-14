@@ -1,6 +1,6 @@
 local TweenHandler = require("sources/engine/tweenhandler")
 
-local Yuyuko = require("assets/characters/yuyuko/yuyuko")
+--local Yuyuko = require("assets/characters/yuyuko/yuyuko")
 
 
 ----------------------------------------------------------------
@@ -9,7 +9,9 @@ local original_resolution_y = 720
 
 local scale_resolution_x = love.graphics.getWidth() / original_resolution_x
 local scale_resolution_y = love.graphics.getHeight() / original_resolution_y
-
+local tween = TweenHandler:new({ orange = 5, sex = {wow = {ok = 10}}})
+    
+    
 
 ----------------------------------------------------------------
 function love.load()
@@ -29,9 +31,11 @@ function love.load()
     -- Initialize Graphics
     love.graphics.setBackgroundColor(255, 255, 255)
     love.graphics.setDefaultFilter("linear", "linear")
+    
+    tween:play({sex = {wow = {ok = 0}}}, "linear", 0.5)
 
     -- Initialize Game
-    Yuyuko:init()
+    --Yuyuko:init()
 
 end
 
@@ -45,7 +49,7 @@ function love.draw()
         -- centering Yuyuko and anchoring at the bottom
         love.graphics.translate(love.graphics.getWidth() / 2, love.graphics.getHeight() - 160)
 
-        Yuyuko:draw()
+        --Yuyuko:draw()
     love.graphics.pop()
 
 end
@@ -55,7 +59,6 @@ end
 function love.update(dt)
 
     TweenHandler.update(dt)
-    
-    Yuyuko:update(dt)
+    --Yuyuko:update(dt)
 
 end

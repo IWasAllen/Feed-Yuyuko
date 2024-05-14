@@ -32,11 +32,13 @@ function Brain:new()
 end
 
 
-----------------------------------------------------------------
+-----------------------------------------------------   -----------
 function Brain:push(byte)
 
+    print("Pushed", byte)
+
     table.insert(self.memory.short, byte)
-    
+
     -- Humans can only remember up to 7 things in short term memory
     if #self.memory.short > 7 then
         table.insert(self.memory.long, self.memory.short[1])
@@ -46,7 +48,7 @@ function Brain:push(byte)
 end
 
 
-----------------------------------------------------------------      
+----------------------------------------------------------------
 function Brain:pop()
 
     table.remove(self.memory.short, #self.memory.short)

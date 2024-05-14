@@ -16,9 +16,11 @@ local m_texture_tears = love.graphics.newImage(dir .. "textures/tears.png")
 local m_particle_puke = love.graphics.newParticleSystem
 local m_particle_tears = love.graphics.newParticleSystem
 
+local m_wobble_progress = 0.0
+
 
 ----------------------------------------------------------------
-local BYTES = {
+local Bytes = {
     ["idle"]             = 0,
     ["left_short"]       = 1,
     ["left_medium"]      = 2,
@@ -68,14 +70,18 @@ function Yuyuko:update(deltaTime)
 
    Character.update(self, deltaTime)
 
+    -- Wobbling Animation States
+    if Yuyuko.state == "idle" then
+        m_wobble_progress = m_wobble_progress + deltaTime
+    end
+    
+    
     -- Debugging keyboard press
     if love.keyboard.isDown("w") then
         if not debounce1 then
             debounce1 = true
 
             Brain:push(1)
-            local classified = Brain:analyze(1)
-            print("Pushed 1")
             Yuyuko:emotion("disgust")
         end
     else
@@ -87,9 +93,7 @@ function Yuyuko:update(deltaTime)
             debounce2 = true
 
             Brain:push(0)
-            local classified = Brain:analyze(1)
-            print("Pushed 0")
-            Yuyuko.resources.sprite_mouth:stop()
+            Yuyuko:emotion("happy")
 
         end
     else

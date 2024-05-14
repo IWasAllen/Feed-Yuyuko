@@ -1,4 +1,4 @@
-local Spritesheet = {}
+local Spritesheet, m_spriteset = {}
 
 
 ----------------------------------------------------------------

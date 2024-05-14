@@ -173,29 +173,42 @@ local EnumStyles = {
 
 
 ----------------------------------------------------------------
--- Tween Class (Singleton)
+-- Helper Functions
+----------------------------------------------------------------
+local _oldassert = assert
+
+local function assert(condition, message)
+
+    _oldassert(condition, "[TweenHandler] " .. message)
+
+end
+
+
+----------------------------------------------------------------
+local function lerp(start, target, time, style)
+
+    return start + (target - start) * EnumStyles[style](time)
+
+end
+
+
+----------------------------------------------------------------
+-- Tween Class
 ----------------------------------------------------------------
 local TweenHandler, m_tweenset = {}, {}
 
 
 ----------------------------------------------------------------
-function TweenHandler:new(callback, ...)
+function TweenHandler:new(obj_reference)
 
     local class = {}
-    class.callback = callback
-    class.progress = 0.0
-    class.speed    = 1.0
-    class.style    = "linear"
+    class.initial = {}
+    class.goal    = {}
+    class.subject = obj_reference
 
-    -- Initializes tweening values
-    class.values_start = {}
-    class.values_end = {}
-
-    for i = 1, debug.getinfo(callback).nparams do
-        class.values_start[i] = ({...})[i] or 0
-        class.values_end[i] = 0
-        class[i] =  class.values_start[i]
-    end
+    class.speed = 1.0
+    class.style = "linear"
+    class.time  = 0.0
 
     setmetatable(class, self)
     self.__index = self
@@ -206,21 +219,54 @@ end
 
 
 ----------------------------------------------------------------
-function TweenHandler:play(target_values, style, duration)
+function TweenHandler:play(goal, style, duration)
 
-    self.progress = 0.00
-
-    -- Sets the tween properties
-    for i = 1, #self.values_start do
-        self.values_start[i] = self[i]
-        self.values_end[i] = target_values[i]
-    end
-
+    self.progress = 0.0
     self.speed = 1 / duration
     self.style = style
 
-    -- Add in the set
+    self.initial = {}
+    self.goal = goal
+
+    -- Copy the required initials from the subject
+    local function recursive_copy(subject, initial, goal)
+        for i, v in pairs(goal) do
+            assert(subject[i] ~= nil, string.format("attempt to tween unknown subject field at '%s'", i))
+            assert(type(subject[i]) == type(v), string.format("attempt to tween different types at '%s'", i))
+
+            if type(subject[i]) ~= "table" then
+                initial[i] = subject[i]
+            else
+                initial[i] = {}
+                recursive_copy(subject[i], initial[i], v)
+            end
+        end
+    end
+
+    recursive_copy(self.subject, self.initial, self.goal)
+
+    -- Add in the set to update it overtime
     m_tweenset[tostring(self)] = self
+
+end
+
+
+----------------------------------------------------------------
+function TweenHandler:set(time)
+
+    self.time = time
+
+    local function recursive_lerp(subject, initial, goal)
+        for i, v in pairs(goal) do
+            if type(subject[i]) ~= "table" then
+                subject[i] = lerp(initial[i], v, time, self.style)
+            else
+                recursive_lerp(subject[i], initial[i], v)
+            end
+        end
+    end
+
+    recursive_lerp(self.subject, self.initial, self.goal)
 
 end
 
@@ -228,28 +274,16 @@ end
 ----------------------------------------------------------------
 function TweenHandler.update(deltaTime)
 
-    -- Iterate through playing tween objects
     for i, v in pairs(m_tweenset) do
-        v.progress = v.progress + deltaTime * v.speed
+        local time = v.time + deltaTime * v.speed
 
-        -- Iterate through each variables
-        for i = 1, #v do
-
-            -- Linear Interpolation
-            if v.progress < 1.0 then 
-                v[i] = v.values_start[i] + (v.values_end[i] - v.values_start[i]) * EnumStyles[v.style](v.progress)
-
-            -- Finalization
-            else
-                v[i] = v.values_end[i]
-                v.progress = 1.0
-
-                -- Remove itself from the set
-                m_tweenset[tostring(v)] = nil
-            end
+        -- Tween Expiration
+        if time>= 1 then
+            time = 1
+            m_tweenset[tostring(i)] = nil
         end
 
-        v.callback(unpack(v))
+        v:set(time)
     end
 
 end
