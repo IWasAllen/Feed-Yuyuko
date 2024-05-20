@@ -6,6 +6,8 @@ local Character = require("sources/character")
 
 local Dialogue = loadfile(dir .. "dialogue/english")
 
+local TweenHandler = require("sources/engine/tweenhandler")
+
 
 ----------------------------------------------------------------
 -- Private
@@ -15,8 +17,6 @@ local m_texture_tears = love.graphics.newImage(dir .. "textures/tears.png")
 
 local m_particle_puke = love.graphics.newParticleSystem
 local m_particle_tears = love.graphics.newParticleSystem
-
-local m_wobble_progress = 0.0
 
 
 ----------------------------------------------------------------
@@ -38,69 +38,48 @@ local Bytes = {
 ----------------------------------------------------------------
 local Yuyuko = Character:new(dir)
 
--- Todo on wobble animation has progress. 1 = wobbled down, 0 = normal.
--- so that when speaking, tween progress back adn foruhtt 0 to 1
 
 ----------------------------------------------------------------
 function Yuyuko:init()
 
     print("Yuyuko init() called!")
 
-    Character.init(self, {76, 276}, {430, 830}, {276, 476}, {680, 470})
+    local resources_locations = {
+        eyes = {76, 276};
+        mouth = {430, 830};
+        left_eyebrow = {276, 476};
+        right_eyebrow = {680, 470};
+    }
 
-    self.resources.dialogue:tone("minor")
+    Character.init(self, resources_locations)
 
-
-end
-
-
-----------------------------------------------------------------
-function Yuyuko:draw()
-
-    Character.draw(Yuyuko)
+    self.resources.dialogue:tone("blues")
 
 end
 
 
 ----------------------------------------------------------------
-local debounce1 = false
-local debounce2 = false
+-- Debug
+----------------------------------------------------------------
+function love.keypressed(key, scancode, isrepeat)
 
-function Yuyuko:update(deltaTime)
-
-   Character.update(self, deltaTime)
-
-    -- Wobbling Animation States
-    if Yuyuko.state == "idle" then
-        m_wobble_progress = m_wobble_progress + deltaTime
-    end
-    
-    
-    -- Debugging keyboard press
-    if love.keyboard.isDown("w") then
-        if not debounce1 then
-            debounce1 = true
-
-            Brain:push(1)
-            Yuyuko:emotion("disgust")
-        end
-    else
-        debounce1 = false
-    end
-
-    if love.keyboard.isDown("d") then
-        if not debounce2 then
-            debounce2 = true
-
-            Brain:push(0)
-            Yuyuko:emotion("happy")
-
-        end
-    else
-        debounce2 = false
-    end
+    if scancode == 'w' then
+        print("Pushed 1")
  
+        Yuyuko:speak("The quick brown fox jumped over\nthe lazy dog!", 14)
+        Yuyuko:emotion("disgust")
+
+    end
+
+    if scancode == 'd' then
+        print("Pushed 0")
+
+        Yuyuko:emotion("happy")
+
+    end
+
 end
+
 
 
 return Yuyuko

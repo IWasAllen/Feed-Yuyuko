@@ -30,7 +30,7 @@ end
 function Dialogue:new(font_filename, sound_filename)
 
     local class   = {}
-    class.font    = love.graphics.newFont(font_filename, 48)
+    class.font    = love.graphics.newFont(font_filename, 48 )
     class.pitches = Pitches["whole"]
     class.sound   = love.audio.newSource(sound_filename, "static")
     class.text    = love.graphics.newText(class.font)
@@ -61,7 +61,7 @@ function Dialogue:play(text, speed)
 
     self.content        = text
     self.previous_index = 0
-    self.progress       = 1.0
+    self.progress       = 1
     self.speed          = speed or self.speed
 
 end

@@ -143,30 +143,56 @@ end
 
 
 ----------------------------------------------------------------
+local function circularIn(progress)
+    return 1 - math.sqrt(1 - progress * progress)
+end
+
+
+----------------------------------------------------------------
+local function circularOut(progress)
+    return math.sqrt(1 - math.pow(progress - 1, 2))
+end
+
+
+----------------------------------------------------------------
+local function circularInOut(progress)
+    if progress < 0.5 then
+        return (1 - math.sqrt(1 - math.pow(progress * 2, 2))) / 2
+    else
+        return (math.sqrt(1 - math.pow(progress * -2 + 2, 2)) + 1) / 2
+    end
+end
+
+
+----------------------------------------------------------------
 local EnumStyles = {
-    sineIn      = sineIn;
-    sineOut     = sineOut;
-    sineInOut   = sineInOut;
+    sineIn        = sineIn;
+    sineOut       = sineOut;
+    sineInOut     = sineInOut;
 
-    quadIn      = quadIn;
-    quadOut     = quadOut;
-    quadInOut   = quadInOut;
+    quadIn        = quadIn;
+    quadOut       = quadOut;
+    quadInOut     = quadInOut;
 
-    cubicIn     = cubicIn;
-    cubicOut    = cubicOut;
-    cubicInOut  = cubicInOut;
+    cubicIn       = cubicIn;
+    cubicOut      = cubicOut;
+    cubicInOut    = cubicInOut;
 
-    quartIn     = quartIn;
-    quartOut    = quartOut;
-    quartInOut  = quartInOut;
+    quartIn       = quartIn;
+    quartOut      = quartOut;
+    quartInOut    = quartInOut;
 
-    backIn      = backIn;
-    backOut     = backOut;
-    backInOut   = backInOut;
+    backIn        = backIn;
+    backOut       = backOut;
+    backInOut     = backInOut;
 
-    bounceIn    = bounceIn;
-    bounceOut   = bounceOut;
-    bounceInOut = bounceInOut;
+    bounceIn      = bounceIn;
+    bounceOut     = bounceOut;
+    bounceInOut   = bounceInOut;
+
+    circularIn    = circularIn;
+    circularOut   = circularOut;
+    circularInOut = circularInOut;
 
     linear      = function(x) return x end;
 }
@@ -195,7 +221,7 @@ end
 ----------------------------------------------------------------
 -- Tween Class
 ----------------------------------------------------------------
-local TweenHandler, m_tweenset = {}, {}
+local TweenHandler, m_objset = {}, {}
 
 
 ----------------------------------------------------------------
@@ -221,7 +247,7 @@ end
 ----------------------------------------------------------------
 function TweenHandler:play(goal, style, duration)
 
-    self.progress = 0.0
+    self.time = 0.0
     self.speed = 1 / duration
     self.style = style
 
@@ -246,7 +272,7 @@ function TweenHandler:play(goal, style, duration)
     recursive_copy(self.subject, self.initial, self.goal)
 
     -- Add in the set to update it overtime
-    m_tweenset[tostring(self)] = self
+    m_objset[tostring(self)] = self
 
 end
 
@@ -274,13 +300,13 @@ end
 ----------------------------------------------------------------
 function TweenHandler.update(deltaTime)
 
-    for i, v in pairs(m_tweenset) do
+    for i, v in pairs(m_objset) do
         local time = v.time + deltaTime * v.speed
 
         -- Tween Expiration
         if time>= 1 then
             time = 1
-            m_tweenset[tostring(i)] = nil
+            m_objset[i] = nil
         end
 
         v:set(time)
