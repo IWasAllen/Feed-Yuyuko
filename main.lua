@@ -4,6 +4,7 @@ local TweenHandler = require("sources/engine/tweenhandler")
 
 local Yuyuko = require("assets/characters/yuyuko/yuyuko")
 
+
 ----------------------------------------------------------------
 local original_resolution_x = 1280
 local original_resolution_y = 720
@@ -56,7 +57,7 @@ end
 ----------------------------------------------------------------
 function love.update(dt)
 
-    -- Internal Schedule
+    -- Engine Schedule
     SpriteHandler.update(dt)
     TweenHandler.update(dt)
 

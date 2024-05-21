@@ -246,7 +246,7 @@ end
 ----------------------------------------------------------------
 function TweenHandler:play(goal, style, duration)
 
-    self.time = 0.0
+    self.time = 0
     self.speed = 1 / duration
     self.style = style
 

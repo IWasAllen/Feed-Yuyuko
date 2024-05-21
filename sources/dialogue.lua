@@ -8,17 +8,24 @@ local Pitches = {
 
 local function getNoisedPitch(pitches, time, seed)
 
-    local noise = love.math.noise(time / 4, seed)
-
+    ------------------------
+    local noise = love.math.noise(time / 16, seed)
     local index = noise * #pitches
 
+    ------------------------
     -- Adding variety for complex and catchy sounding
-    local variety = love.math.noise(noise * 64 , seed * 2) * 2 - 1
-    --print(string.format("index %.2f, (%+.2f): %s", index, variety, string.rep('#', index + variety)))
+    ------------------------
+    local variety = love.math.noise(noise ^ 2 * 64 , seed * 2 ) * 2 - 1
 
-    index = index + variety 
+    if time <= 1 then
+        variety = -math.random(2, 4)
+    end
 
-    return pitches[math.floor(math.max(1, math.min(#pitches, index)))]
+    ------------------------
+    local finalIndex = index + variety
+    -- print(string.format("%.2f : (%+.2f) = %+.2f", noise, variety, finalIndex))
+
+    return pitches[math.floor(math.max(1, math.min(#pitches, finalIndex)))]
 
 end
 
@@ -50,7 +57,7 @@ end
 ----------------------------------------------------------------
 function Dialogue:done()
 
-    return self.time >= #self.content
+    return self.time >= #self.content + 0.5
 
 end
 
@@ -59,8 +66,9 @@ end
 function Dialogue:play(text, charactersPerSecond)
 
     local _, wrappedText = self.font:getWrap(text, 640)
+    wrappedText = table.concat(wrappedText, '\n'):gsub("% \n", '\n')
 
-    self.content = table.concat(wrappedText, "\n ")
+    self.content = wrappedText
     self.speed   = charactersPerSecond or self.speed
     self.time    = 1
 
@@ -82,15 +90,22 @@ function Dialogue:update(deltaTime)
         return
     end
 
+    local previous_sub_index = math.floor(self.time - deltaTime)
     self.time = self.time + deltaTime * self.speed
+    local sub_index = math.floor(self.time)
 
-    -- Text updates string
-    local final_substr = math.floor(self.time)
-
-    self.text:set(self.content:sub(1, final_substr))
+    -- Appending character to text
+    self.text:set(self.content:sub(1, sub_index))
 
     -- Playing sound per character
-
+    if previous_sub_index ~= sub_index and self.content:sub(sub_index, sub_index) ~= ' ' then
+        
+        -- Ignore space character
+        if self.content:sub(sub_index, sub_index) ~= ' ' then
+            self.sound:setPitch(getNoisedPitch(self.pitches, sub_index, #self.content))
+            self.sound:play()
+        end
+    end
 
 end
 
