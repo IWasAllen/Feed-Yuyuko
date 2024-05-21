@@ -186,10 +186,7 @@ function Character:draw()
     -- Drawing the text dialogue
     love.graphics.push()
         love.graphics.translate(0, -196)
-
-        love.graphics.setColor(0, 0, 0)
         self.resources.dialogue:draw()
-        love.graphics.setColor(1, 1, 1)
     love.graphics.pop()
 
 end

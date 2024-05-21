@@ -53,7 +53,7 @@ function Yuyuko:init()
 
     Character.init(self, resources_locations)
 
-    self.resources.dialogue:tone("minor")
+    self.resources.dialogue:setScale("minor")
 
 end
 
@@ -67,7 +67,7 @@ function love.keypressed(key, scancode, isrepeat)
         print("Pushed 1")
  
         Yuyuko:speak("The quick brown jumped over the lazy dog.", 14)
-        Yuyuko:emotion("disgust")
+        Yuyuko:emotion("sad")
     end
 
     if scancode == 'd' then

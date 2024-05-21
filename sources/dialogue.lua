@@ -39,6 +39,7 @@ Dialogue.__index = Dialogue
 function Dialogue:new(font_filename, sound_filename)
 
     local class   = {}
+    class.color   = {0, 0, 0, 1}
     class.font    = love.graphics.newFont(font_filename, 48)
     class.pitches = Pitches["whole"]
     class.sound   = love.audio.newSource(sound_filename, "static")
@@ -76,7 +77,17 @@ end
 
 
 ----------------------------------------------------------------
-function Dialogue:tone(scale_name)
+function Dialogue:setColor(red, green, blue, alpha)
+
+    self.color[1] = red
+    self.color[2] = green
+    self.color[3] = blue
+    self.color[4] = alpha
+
+end
+
+----------------------------------------------------------------
+function Dialogue:setScale(scale_name)
 
     self.pitches = Pitches[scale_name]
 
@@ -113,9 +124,13 @@ end
 ----------------------------------------------------------------
 function Dialogue:draw()
 
+    local r, g, b, a = love.graphics.getColor()
+
     love.graphics.push()
+        love.graphics.setColor(unpack(self.color))
         love.graphics.translate(-self.text:getWidth() / 2, -self.text:getHeight() / 2) -- centering text
         love.graphics.draw(self.text)
+        love.graphics.setColor(r, g, b, a)
     love.graphics.pop()
 
 end
