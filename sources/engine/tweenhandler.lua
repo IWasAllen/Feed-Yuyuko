@@ -222,6 +222,7 @@ end
 -- Tween Class
 ----------------------------------------------------------------
 local TweenHandler, m_objset = {}, {}
+TweenHandler.__index = TweenHandler
 
 
 ----------------------------------------------------------------
@@ -237,8 +238,6 @@ function TweenHandler:new(obj_reference)
     class.time  = 0.0
 
     setmetatable(class, self)
-    self.__index = self
-
     return class
 
 end
@@ -304,7 +303,7 @@ function TweenHandler.update(deltaTime)
         local time = v.time + deltaTime * v.speed
 
         -- Tween Expiration
-        if time>= 1 then
+        if time >= 1 then
             time = 1
             m_objset[i] = nil
         end

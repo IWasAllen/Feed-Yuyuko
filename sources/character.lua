@@ -29,19 +29,13 @@ end
 ----------------------------------------------------------------
 function Character:init(resources_locations)
 
-    -- Set resource locations
     self.resources.locations = resources_locations
 
-    -- Load resources
+    -- Visual resources
     self.resources.image_base    = love.graphics.newImage(self.directory .. "textures/base.png")
     self.resources.image_eyebrow = love.graphics.newImage(self.directory .. "textures/eyebrow.png")
     self.resources.sprite_eyes   = SpriteHandler:new(self.directory .. "textures/eyes.png", 1024, 1024)
     self.resources.sprite_mouth  = SpriteHandler:new(self.directory .. "textures/mouths.png", 256, 256)
-
-    -- Miscellanous Resources
-    self.misc.wobble_intensity = 0.25
-    self.misc.wobble_frequency = 0.50
-    self.misc.wobble_time = 0.00
 
     -- Object Resources
     self.resources.dialogue = Dialogue:new(self.directory .. "dialogue/font.ttf", self.directory .. "dialogue/voice.wav")
@@ -50,6 +44,10 @@ function Character:init(resources_locations)
     self.resources.tween_eyebrows = TweenHandler:new({0, 0, 0, 0, 0, math.rad(14)})
     self.resources.tween_wobble = TweenHandler:new(self.misc)
 
+    -- Miscellanous Resources
+    self.misc.wobble_intensity = 0.25
+    self.misc.wobble_frequency = 0.50
+    self.misc.wobble_time = 0.00
 
 end
 
@@ -66,7 +64,7 @@ function Character:emotion(state)
     }
 
     local x1, y1, r1, x2, y2, r2, row = unpack(EnumEmotions[state])
-    
+
     -- Convert rotation variables from degrees to radians
     r1 = math.rad(r1)
     r2 = math.rad(r2)
@@ -120,6 +118,10 @@ function Character:draw()
     local HALF_WIDTH = self.resources.image_base:getWidth() / 2
     local HALF_HEIGHT = self.resources.image_base:getHeight() / 2
 
+     -- Wobbling Effect
+    local cycleX = math.sin(self.misc.wobble_time * math.pi * 2) * self.misc.wobble_intensity
+    local cycleY = -math.sin(self.misc.wobble_time * math.pi * 2) * self.misc.wobble_intensity
+
     -- Drawing the character
     love.graphics.push()
 
@@ -127,15 +129,12 @@ function Character:draw()
         love.graphics.scale(0.25, 0.25)
         love.graphics.translate(-HALF_WIDTH, -HALF_HEIGHT) -- center origin
 
-        do -- Wobbling Effect
-            local cycleX = math.sin(self.misc.wobble_time * math.pi * 2) * self.misc.wobble_intensity
-            local cycleY = -math.sin(self.misc.wobble_time * math.pi * 2) * self.misc.wobble_intensity
-    
+        -- Full Wobble Translations
+        do 
             -- Normalize scale to 0.95 ~ 1.00
             local scaleX = (cycleX + 19) / 20
             local scaleY = (cycleY + 19) / 20
 
-            -- Translations
             local FULL_HEIGHT = HALF_HEIGHT * 2
             love.graphics.translate(HALF_WIDTH + (-scaleX * HALF_WIDTH), FULL_HEIGHT + (-scaleY * FULL_HEIGHT))
             love.graphics.scale(scaleX, scaleY)
@@ -148,14 +147,9 @@ function Character:draw()
 
         -- Drawing eyes
         love.graphics.push()
+            love.graphics.translate(0, -cycleY * 8) -- parallax wobbling
             love.graphics.translate(unpack(self.resources.locations.eyes))
             love.graphics.draw(self.resources.sprite_eyes())
-        love.graphics.pop()
-
-        -- Drawing mouth
-        love.graphics.push()
-            love.graphics.translate(unpack(self.resources.locations.mouth))
-            love.graphics.draw(self.resources.sprite_mouth())
         love.graphics.pop()
 
         do -- Drawing eyebrows
@@ -163,6 +157,7 @@ function Character:draw()
 
             -- Left eyebrow
             love.graphics.push()
+                love.graphics.translate(0, -cycleY * 16) -- parallax wobbling
                 love.graphics.translate(unpack(self.resources.locations.left_eyebrow))
                 love.graphics.translate(translations[1], translations[2])
                 love.graphics.rotate(translations[3])
@@ -171,6 +166,7 @@ function Character:draw()
     
             -- Right eyebrow
             love.graphics.push()
+                love.graphics.translate(0, -cycleY * 16) -- parallax wobbling
                 love.graphics.translate(unpack(self.resources.locations.right_eyebrow))
                 love.graphics.translate(translations[4], translations[5])
                 love.graphics.rotate(translations[6])
@@ -178,6 +174,13 @@ function Character:draw()
             love.graphics.pop()
         end
 
+        -- Drawing mouth
+        love.graphics.push()
+            love.graphics.translate(0, -cycleY * 4) -- parallax wobbling
+            love.graphics.translate(unpack(self.resources.locations.mouth))
+            love.graphics.draw(self.resources.sprite_mouth())
+        love.graphics.pop()
+    
     love.graphics.pop()
 
     -- Drawing the text dialogue

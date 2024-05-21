@@ -66,15 +66,13 @@ function love.keypressed(key, scancode, isrepeat)
     if scancode == 'w' then
         print("Pushed 1")
  
-        Yuyuko:speak("The quick brown fox jumped over\nthe lazy dog!", 14)
+        Yuyuko:speak("The quick brown fox jumped over the lazy dog!", 14)
         Yuyuko:emotion("disgust")
-
     end
 
     if scancode == 'd' then
         print("Pushed 0")
-
-        Yuyuko:emotion("happy")
+                Yuyuko:emotion("happy")
 
     end
 

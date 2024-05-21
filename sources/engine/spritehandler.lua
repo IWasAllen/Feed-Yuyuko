@@ -1,6 +1,7 @@
 local Spritesheet, m_objset = {}, {}
 Spritesheet.__index = Spritesheet
 
+
 ----------------------------------------------------------------
 function Spritesheet:new(image_filename, frame_width, frame_height)
 
@@ -53,7 +54,7 @@ function Spritesheet:play(start_column, end_column, duration)
 
     self.time = 0
 
-    -- Adding +1 for intended result occuring in lerp
+    -- Adding +1 for intended result occurring in lerp
     self.column_x = start_column + (start_column > end_column and 1 or 0)
     self.column_y = end_column   + (start_column < end_column and 1 or 0)
 
@@ -81,7 +82,7 @@ function Spritesheet:stop()
     self.speed = 0
     self.time = 0
 
-    -- Set initial frame
+    -- Set initial frame (usually closer to 0)
     local lowest = math.min(self.column_x, self.column_y)
     self.column_x = lowest
     self.column_y = lowest
