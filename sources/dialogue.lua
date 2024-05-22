@@ -114,6 +114,7 @@ function Dialogue:update(deltaTime)
     local sub_char = self.content:sub(self.index, self.index)
 
     if sub_char == '.' or sub_char == ',' then
+        self.timer = 6
     elseif sub_char == ' ' then
         self.timer = 2
     else
@@ -123,7 +124,7 @@ function Dialogue:update(deltaTime)
     -- Play sound per character
     self.sound:setPitch(getNoisedPitch(self.pitches, self.index, #self.content))
 
-    if self:done() then -- final note on scale
+    if self:done() then -- play final note on scale
         self.sound:setPitch(self.pitches[#self.pitches])
     end
 
