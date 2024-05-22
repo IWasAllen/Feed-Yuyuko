@@ -63,7 +63,7 @@ function Spritesheet:play(start_column, end_column, duration)
     end
 
     -- Add in the set to update it overtime
-    m_objset[tostring(self)] = self
+    m_objset[self] = true
 
 end
 
@@ -87,8 +87,8 @@ function Spritesheet:stop()
     self.column_x = lowest
     self.column_y = lowest
 
-    -- Remove in the set
-    m_objset[tostring(self)] = nil
+    -- Remove itself from updating
+    m_objset[self] = nil
 
 end
 
@@ -97,7 +97,7 @@ end
 function Spritesheet.update(deltaTime)
 
     for i, v in pairs(m_objset) do
-        v.time = (v.time + deltaTime * v.speed) % 1
+        i.time = (i.time + deltaTime * i.speed) % 1
     end
 
 end

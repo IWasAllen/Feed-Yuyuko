@@ -271,7 +271,7 @@ function TweenHandler:play(goal, style, duration)
     recursive_copy(self.subject, self.initial, self.goal)
 
     -- Add in the set to update it overtime
-    m_objset[tostring(self)] = self
+    m_objset[self] = true
 
 end
 
@@ -300,7 +300,7 @@ end
 function TweenHandler.update(deltaTime)
 
     for i, v in pairs(m_objset) do
-        local time = v.time + deltaTime * v.speed
+        local time = i.time + deltaTime * i.speed
 
         -- Tween Expiration
         if time >= 1 then
@@ -308,7 +308,7 @@ function TweenHandler.update(deltaTime)
             m_objset[i] = nil
         end
 
-        v:set(time)
+        i:set(time)
     end
 
 end
