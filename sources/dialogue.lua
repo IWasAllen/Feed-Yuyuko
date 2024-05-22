@@ -8,20 +8,20 @@ local Pitches = {
 
 local function getNoisedPitch(pitches, time, seed)
 
-    local noise = love.math.noise(time / 16, seed)
+    local noise = love.math.noise(time / 4, seed)
 
     ------------------------
     -- Adding variety for complex and catchy sounding
     ------------------------
-    local variety = love.math.noise(noise * 500, seed * (noise / 20)) * 6 - 3.5
+    local variety = love.math.noise(noise * 500, seed * (noise + 0.15)) * 6 - 3.5
 
     if time <= 2 then
-        variety = -math.random(2, 4)
+        variety = math.random(-4, -2)
     end
 
     ------------------------
     local index = (noise * #pitches) + variety
-    -- print(string.format("%.2f : (%+.2f) = %s", noise, variety, string.rep('#', index))) -- debug
+    -- print(string.format("%.2f : (%+.2f) = %s", noise * #pitches, variety, string.rep('#', index))) -- debug
 
     return pitches[math.floor(math.max(1, math.min(#pitches, index)))]
 
@@ -109,13 +109,13 @@ function Dialogue:update(deltaTime)
     -- Increment text characters
     self.index = math.floor(self.index + 1 - self.timer)
     self.text:set(self.content:sub(1, self.index))
-    
+
     -- Pause on punctuations
     local sub_char = self.content:sub(self.index, self.index)
 
     if sub_char == '.' or sub_char == ',' then
-        self.timer = 6
     elseif sub_char == ' ' then
+        self.timer = 6
         self.timer = 2
     else
         self.timer = 1
@@ -123,7 +123,7 @@ function Dialogue:update(deltaTime)
 
     -- Play sound per character
     self.sound:setPitch(getNoisedPitch(self.pitches, self.index, #self.content))
-    
+
     if self:done() then -- final note on scale
         self.sound:setPitch(self.pitches[#self.pitches])
     end
