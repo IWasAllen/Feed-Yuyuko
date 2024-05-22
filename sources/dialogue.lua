@@ -115,7 +115,6 @@ function Dialogue:update(deltaTime)
 
     if sub_char == '.' or sub_char == ',' then
     elseif sub_char == ' ' then
-        self.timer = 6
         self.timer = 2
     else
         self.timer = 1
