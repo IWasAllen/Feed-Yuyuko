@@ -1,31 +1,29 @@
 local Pitches = {
-    major   = {1.00, 1.12, 1.25, 1.33, 1.49, 1.68, 1.88, 2.00},
-    minor   = {1.00, 1.12, 1.18, 1.33, 1.49, 1.58, 1.88, 2.00},
-    whole   = {1.00, 1.12, 1.25, 1.41, 1.58, 1.78, 2.00},
-    blues   = {1.00, 1.18, 1.33, 1.41, 1.49, 1.78, 2.00},
-    klezmer = {1.00, 1.05, 1.25, 1.33, 1.49, 1.58, 1.78, 2.00}
+    major   = {1.00, 1.12, 1.25, 1.33, 1.49, 1.68, 1.88, 2.00};
+    minor   = {1.00, 1.12, 1.18, 1.33, 1.49, 1.58, 1.88, 2.00};
+    whole   = {1.00, 1.12, 1.25, 1.41, 1.58, 1.78, 2.00};
+    blues   = {1.00, 1.18, 1.33, 1.41, 1.49, 1.78, 2.00};
+    klezmer = {1.00, 1.05, 1.25, 1.33, 1.49, 1.58, 1.78, 2.00};
 }
 
 local function getNoisedPitch(pitches, time, seed)
 
-    ------------------------
     local noise = love.math.noise(time / 16, seed)
-    local index = noise * #pitches
 
     ------------------------
     -- Adding variety for complex and catchy sounding
     ------------------------
-    local variety = love.math.noise(noise ^ 2 * 64 , seed * 2 ) * 2 - 1
+    local variety = love.math.noise(noise * 500, seed * (noise / 20)) * 6 - 3.5
 
-    if time <= 1 then
+    if time <= 2 then
         variety = -math.random(2, 4)
     end
 
     ------------------------
-    local finalIndex = index + variety
-    -- print(string.format("%.2f : (%+.2f) = %+.2f", noise, variety, finalIndex))
+    local index = (noise * #pitches) + variety
+    -- print(string.format("%.2f : (%+.2f) = %s", noise, variety, string.rep('#', index))) -- debug
 
-    return pitches[math.floor(math.max(1, math.min(#pitches, finalIndex)))]
+    return pitches[math.floor(math.max(1, math.min(#pitches, index)))]
 
 end
 
@@ -46,8 +44,9 @@ function Dialogue:new(font_filename, sound_filename)
     class.text    = love.graphics.newText(class.font)
 
     class.content = ""
+    class.index = 1
     class.speed = 1.0
-    class.time = 1.0
+    class.timer = 1.0
 
     setmetatable(class, self)
     return class
@@ -58,7 +57,7 @@ end
 ----------------------------------------------------------------
 function Dialogue:done()
 
-    return self.time >= #self.content + 0.5
+    return self.index >= #self.content
 
 end
 
@@ -70,9 +69,9 @@ function Dialogue:play(text, charactersPerSecond)
     wrappedText = table.concat(wrappedText, '\n'):gsub("% \n", '\n')
 
     self.content = wrappedText
+    self.index   = 0
     self.speed   = charactersPerSecond or self.speed
-    self.time    = 1
-
+    self.timer   = 0
 end
 
 
@@ -97,26 +96,39 @@ end
 ----------------------------------------------------------------
 function Dialogue:update(deltaTime)
 
-   if self:done() then
+    if self:done() then
+        return
+    end
+    
+    self.timer = self.timer - deltaTime * self.speed
+
+    if self.timer > 0 then
         return
     end
 
-    local previous_sub_index = math.floor(self.time - deltaTime)
-    self.time = self.time + deltaTime * self.speed
-    local sub_index = math.floor(self.time)
+    -- Increment text characters
+    self.index = math.floor(self.index + 1 - self.timer)
+    self.text:set(self.content:sub(1, self.index))
+    
+    -- Pause on punctuations
+    local sub_char = self.content:sub(self.index, self.index)
 
-    -- Appending character to text
-    self.text:set(self.content:sub(1, sub_index))
-
-    -- Playing sound per character
-    if previous_sub_index ~= sub_index and self.content:sub(sub_index, sub_index) ~= ' ' then
-        
-        -- Ignore space character
-        if self.content:sub(sub_index, sub_index) ~= ' ' then
-            self.sound:setPitch(getNoisedPitch(self.pitches, sub_index, #self.content))
-            self.sound:play()
-        end
+    if sub_char == '.' or sub_char == ',' then
+        self.timer = 6
+    elseif sub_char == ' ' then
+        self.timer = 2
+    else
+        self.timer = 1
     end
+
+    -- Play sound per character
+    self.sound:setPitch(getNoisedPitch(self.pitches, self.index, #self.content))
+    
+    if self:done() then -- final note on scale
+        self.sound:setPitch(self.pitches[#self.pitches])
+    end
+
+    self.sound:play()
 
 end
 
