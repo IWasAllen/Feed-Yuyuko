@@ -122,7 +122,8 @@ function Dialogue:update(deltaTime)
     end
 
     -- Play sound per character
-    self.sound:setPitch(getNoisedPitch(self.pitches, self.index, #self.content))
+    local seed = #self.content * string.byte(self.content)
+    self.sound:setPitch(getNoisedPitch(self.pitches, self.index, seed))
 
     if self:done() then -- play final note on scale
         self.sound:setPitch(self.pitches[#self.pitches])
