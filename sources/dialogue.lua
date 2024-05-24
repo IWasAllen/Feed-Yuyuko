@@ -86,7 +86,7 @@ function Dialogue:setColor(red, green, blue, alpha)
 end
 
 ----------------------------------------------------------------
-function Dialogue:setScale(scale_name)
+function Dialogue:setMusicalScale(scale_name)
 
     self.pitches = Pitches[scale_name]
 
