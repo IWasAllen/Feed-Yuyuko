@@ -72,6 +72,7 @@ function Dialogue:play(text, charactersPerSecond)
     self.index   = 0
     self.speed   = charactersPerSecond or self.speed
     self.timer   = 0
+
 end
 
 
@@ -99,7 +100,7 @@ function Dialogue:update(deltaTime)
     if self:done() then
         return
     end
-    
+
     self.timer = self.timer - deltaTime * self.speed
 
     if self.timer > 0 then
