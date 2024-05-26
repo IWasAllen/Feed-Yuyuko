@@ -29,12 +29,12 @@ end
 
 
 ----------------------------------------------------------------
-local Dialogue = {}
-Dialogue.__index = Dialogue
+local TextDialogue = {}
+TextDialogue.__index = TextDialogue
 
 
 ----------------------------------------------------------------
-function Dialogue:new(font_filename, sound_filename)
+function TextDialogue:new(font_filename, sound_filename)
 
     local class   = {}
     class.color   = {0, 0, 0, 1}
@@ -44,9 +44,9 @@ function Dialogue:new(font_filename, sound_filename)
     class.text    = love.graphics.newText(class.font)
 
     class.content = ""
-    class.index = 1
-    class.speed = 1.0
-    class.timer = 1.0
+    class.index   = 1
+    class.speed   = 1.0
+    class.timer   = 1.0
 
     setmetatable(class, self)
     return class
@@ -55,7 +55,7 @@ end
 
 
 ----------------------------------------------------------------
-function Dialogue:done()
+function TextDialogue:done()
 
     return self.index >= #self.content
 
@@ -63,7 +63,7 @@ end
 
 
 ----------------------------------------------------------------
-function Dialogue:play(text, charactersPerSecond)
+function TextDialogue:play(text, charactersPerSecond)
 
     local _, wrappedText = self.font:getWrap(text, 640)
     wrappedText = table.concat(wrappedText, '\n'):gsub("% \n", '\n')
@@ -77,7 +77,7 @@ end
 
 
 ----------------------------------------------------------------
-function Dialogue:setColor(red, green, blue, alpha)
+function TextDialogue:setColor(red, green, blue, alpha)
 
     self.color[1] = red
     self.color[2] = green
@@ -86,8 +86,9 @@ function Dialogue:setColor(red, green, blue, alpha)
 
 end
 
+
 ----------------------------------------------------------------
-function Dialogue:setMusicalScale(scale_name)
+function TextDialogue:setMusicalScale(scale_name)
 
     self.pitches = Pitches[scale_name]
 
@@ -95,7 +96,7 @@ end
 
 
 ----------------------------------------------------------------
-function Dialogue:update(deltaTime)
+function TextDialogue:update(deltaTime)
 
     if self:done() then
         return
@@ -136,7 +137,7 @@ end
 
 
 ----------------------------------------------------------------
-function Dialogue:draw()
+function TextDialogue:draw()
 
     local r, g, b, a = love.graphics.getColor()
 
@@ -150,4 +151,4 @@ function Dialogue:draw()
 end
 
 
-return Dialogue
+return TextDialogue

@@ -1,14 +1,14 @@
-local Character = {}
-
-local Dialogue = require("sources/dialogue")
+local Base = {}
 
 local SpriteHandler = require("sources/engine/spritehandler")
 
 local TweenHandler = require("sources/engine/tweenhandler")
 
+local TextDialogue = require("sources/character/textdialogue")
+
 
 ----------------------------------------------------------------
-function Character:new(character_directory)
+function Base:new(character_directory)
 
     local class = {}
     class.directory = character_directory .. '/'
@@ -27,7 +27,7 @@ end
 
 
 ----------------------------------------------------------------
-function Character:init(resources_locations)
+function Base:init(resources_locations)
 
     self.resources.locations = resources_locations
 
@@ -37,9 +37,23 @@ function Character:init(resources_locations)
     self.resources.sprite_eyes   = SpriteHandler:new(self.directory .. "textures/eyes.png", 1024, 1024)
     self.resources.sprite_mouth  = SpriteHandler:new(self.directory .. "textures/mouths.png", 256, 256)
 
+    -- load chewing sounds
+    for i, v in pairs(love.filesystem.getDirectoryItems(self.directory .. "audio/chew")) do
+
+        -- load the sound file
+        local sound = love.audio.newSource(self.directory .. "audio/chew/" .. v, "static")
+        sound:setLooping(true)
+
+        local filename = string.match(v, "(.+)%.") -- ignore file extension
+        self.resources["sound_" .. filename] = sound
+
+    end
+
+    self.resources.sound_burp = love.audio.newSource(self.directory .. "audio/burp.wav", "static")
+
     -- Object Resources
-    self.resources.dialogue = Dialogue:new(self.directory .. "dialogue/font.ttf", self.directory .. "dialogue/voice.wav")
-    self.resources.dialogue.font:setFilter("nearest", "nearest")
+    self.resources.textdialogue = TextDialogue:new(self.directory .. "dialogue/font.ttf", self.directory .. "dialogue/voice.wav")
+    self.resources.textdialogue.font:setFilter("nearest", "nearest")
 
     self.resources.tween_eyebrows = TweenHandler:new({0, 0, 0, 0, 0, math.rad(14)})
     self.resources.tween_wobble = TweenHandler:new(self.misc)
@@ -53,7 +67,15 @@ end
 
 
 ----------------------------------------------------------------
-function Character:emotion(state)
+function Base:chew(duration, material)
+
+    
+
+end
+
+
+----------------------------------------------------------------
+function Base:emotion(state)
 
     local EnumEmotions = {
         happy   = {0, 0, 0, 0, 0, 14, 1};
@@ -77,34 +99,17 @@ end
 
 
 ----------------------------------------------------------------
-function Character:speak(text, speed)
+function Base:speak(text, speed)
 
-    self.state = "speaking"
-    self.state_idlelock = true
-
-    self.resources.dialogue:play(text, speed)
-    self.resources.sprite_mouth:play(2, 1, 0.4)
-    self.resources.tween_wobble:play({wobble_intensity = 0.50, wobble_frequency = 2.0}, "circularOut", 0.5)
+    self.resources.textdialogue:play(text, speed)
 
 end
 
 
 ----------------------------------------------------------------
-function Character:update(deltaTime)
+function Base:update(deltaTime)
 
-    -- Internal Resource Updates
-    self.resources.dialogue:update(deltaTime)
-
-    -- Character States
-    if self.state == "speaking" and self.resources.dialogue:done() then
-        self.state_idlelock = false
-        self.resources.sprite_mouth:stop()
-        self.resources.tween_wobble:play({wobble_intensity = 0.25, wobble_frequency = 0.50}, "circularOut", 1.0)
-    end
-
-    if not self.state_idlelock then
-        self.state = "idle" 
-    end
+    self.resources.textdialogue:update(deltaTime)
 
     -- Wobble
     self.misc.wobble_time = self.misc.wobble_time + deltaTime * self.misc.wobble_frequency
@@ -113,7 +118,7 @@ end
 
 
 ----------------------------------------------------------------
-function Character:draw()
+function Base:draw()
 
     local HALF_WIDTH = self.resources.image_base:getWidth() / 2
     local HALF_HEIGHT = self.resources.image_base:getHeight() / 2
@@ -125,12 +130,10 @@ function Character:draw()
     -- Drawing the character
     love.graphics.push()
 
-        -- Translations
         love.graphics.scale(0.25, 0.25)
-        love.graphics.translate(-HALF_WIDTH, -HALF_HEIGHT) -- center origin
+        love.graphics.translate(-HALF_WIDTH, -HALF_HEIGHT) -- center to origin
 
-        -- Full Wobble Translations
-        do 
+        do -- Full Character Wobbling
             -- Normalize scale to 0.95 ~ 1.00
             local scaleX = (cycleX + 19) / 20
             local scaleY = (cycleY + 19) / 20
@@ -153,14 +156,14 @@ function Character:draw()
         love.graphics.pop()
 
         do -- Drawing eyebrows
-            local translations = self.resources.tween_eyebrows.subject
+            local tween_translations = self.resources.tween_eyebrows.subject
 
             -- Left eyebrow
             love.graphics.push()
                 love.graphics.translate(0, -cycleY * 16) -- parallax wobbling
                 love.graphics.translate(unpack(self.resources.locations.left_eyebrow))
-                love.graphics.translate(translations[1], translations[2])
-                love.graphics.rotate(translations[3])
+                love.graphics.translate(tween_translations[1], tween_translations[2])
+                love.graphics.rotate(tween_translations[3])
                 love.graphics.draw(self.resources.image_eyebrow)
             love.graphics.pop()
     
@@ -168,8 +171,8 @@ function Character:draw()
             love.graphics.push()
                 love.graphics.translate(0, -cycleY * 16) -- parallax wobbling
                 love.graphics.translate(unpack(self.resources.locations.right_eyebrow))
-                love.graphics.translate(translations[4], translations[5])
-                love.graphics.rotate(translations[6])
+                love.graphics.translate(tween_translations[4], tween_translations[5])
+                love.graphics.rotate(tween_translations[6])
                 love.graphics.draw(self.resources.image_eyebrow)
             love.graphics.pop()
         end
@@ -180,16 +183,16 @@ function Character:draw()
             love.graphics.translate(unpack(self.resources.locations.mouth))
             love.graphics.draw(self.resources.sprite_mouth())
         love.graphics.pop()
-    
+
     love.graphics.pop()
 
     -- Drawing the text dialogue
     love.graphics.push()
         love.graphics.translate(0, -196)
-        self.resources.dialogue:draw()
+        self.resources.textdialogue:draw()
     love.graphics.pop()
 
 end
 
 
-return Character
+return Base
