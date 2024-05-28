@@ -9,13 +9,11 @@ Base.__index = Base
 
 
 ----------------------------------------------------------------
-function Base:new(character_directory)
+function Base:new()
 
     local class = {}
-    class.directory = character_directory .. '/'
-    class.resources = {locations = {}}
-
     class.cache = {}
+    class.resources = {locations = {}}
     class.misc = {}
 
     setmetatable(class, self)
@@ -25,24 +23,24 @@ end
 
 
 ----------------------------------------------------------------
-function Base:init(resources_locations)
+function Base:init(assetdir, resources_locations)
 
     self.resources.locations = resources_locations
 
     -- Visual resources
-    self.resources.image_base    = love.graphics.newImage(self.directory .. "textures/base.png")
-    self.resources.image_eyebrow = love.graphics.newImage(self.directory .. "textures/eyebrow.png")
+    self.resources.image_base    = love.graphics.newImage(assetdir .. "textures/base.png")
+    self.resources.image_eyebrow = love.graphics.newImage(assetdir .. "textures/eyebrow.png")
 
-    self.resources.sprite_eyes   = SpriteHandler:new(self.directory .. "textures/eyes.png", 1024, 1024)
-    self.resources.sprite_mouth  = SpriteHandler:new(self.directory .. "textures/mouths.png", 256, 256)
+    self.resources.sprite_eyes   = SpriteHandler:new(assetdir .. "textures/eyes.png", 1024, 1024)
+    self.resources.sprite_mouth  = SpriteHandler:new(assetdir .. "textures/mouths.png", 256, 256)
 
     do -- load chewing sounds
         local alias = "sound_chew_"
 
-        for i, v in pairs(love.filesystem.getDirectoryItems(self.directory .. "audio/chew")) do
+        for i, v in pairs(love.filesystem.getDirectoryItems(assetdir .. "audio/chew")) do
 
             -- load the sound file
-            local sound = love.audio.newSource(self.directory .. "audio/chew/" .. v, "static")
+            local sound = love.audio.newSource(assetdir .. "audio/chew/" .. v, "static")
             sound:setLooping(true)
 
             -- store in resources
@@ -52,7 +50,7 @@ function Base:init(resources_locations)
         end
 
         -- load other food related sound
-        self.resources.sound_burp = love.audio.newSource(self.directory .. "audio/burp.wav", "static")
+        self.resources.sound_burp = love.audio.newSource(assetdir .. "audio/burp.wav", "static")
     end
 
     -- Object Resources
@@ -94,6 +92,14 @@ function Base:emotion(state)
     -- Play
     self.resources.sprite_mouth:row(row)
     self.resources.tween_eyebrows:play({x1, y1, r1, x2, y2, r2}, "backOut", 1.0)
+
+end
+
+
+----------------------------------------------------------------
+function Base:wobble(intensity, frequency, duration)
+
+    self.resources.tween_wobble:play({wobble_intensity = intensity, wobble_frequency = frequency}, "circularOut", duration)
 
 end
 

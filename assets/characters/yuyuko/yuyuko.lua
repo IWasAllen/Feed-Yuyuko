@@ -1,12 +1,8 @@
 local dir = "assets/characters/yuyuko/"
 
-local Brain = require("sources/brain"):new()
+local Language = loadfile(dir .. "dialogue/english")
 
-local Character = require("sources/character")
-
-local Dialogue = loadfile(dir .. "dialogue/english")
-
-local TweenHandler = require("sources/engine/tweenhandler")
+local AbstractCharacter = require("sources/character/abstract")
 
 
 ----------------------------------------------------------------
@@ -36,7 +32,7 @@ local Bytes = {
 ----------------------------------------------------------------
 -- Public
 ----------------------------------------------------------------
-local Yuyuko = Character:new(dir)
+local Yuyuko = AbstractCharacter:new()
 
 
 ----------------------------------------------------------------
@@ -44,6 +40,7 @@ function Yuyuko:init()
 
     print("Yuyuko init() called!")
 
+    -- Initialize character resources
     local resources_locations = {
         eyes          = {76, 276};
         mouth         = {430, 830};
@@ -51,9 +48,9 @@ function Yuyuko:init()
         right_eyebrow = {680, 470};
     }
 
-    Character.init(self, resources_locations)
+    AbstractCharacter.init(self, dir, resources_locations)
 
-    self.resources.dialogue:setMusicalScale("blues")
+    -- Load property and states of saved data
 
 end
 
@@ -64,17 +61,14 @@ end
 function love.keypressed(key, scancode, isrepeat)
 
     if scancode == 'w' then
-        print("Pushed 1")
- 
-        Yuyuko:speak("Grasses are monocotyledon herbaceous peelants.", 20)
-        Yuyuko:emotion("sad")
-    end
+        Yuyuko:speak("314159 wow yes! hello hi world, what is happening?!")
+     end
 
     if scancode == 'd' then
-        print("Pushed 0")
-        Yuyuko:speak("Fuck you!", 20)
 
-        Yuyuko:emotion("happy")
+    end
+
+    if scancode == "space" then
     end
 
 end

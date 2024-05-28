@@ -105,11 +105,11 @@ function Dialogue:update(deltaTime)
     if self:done() then
         return
     end
+    
+    self.timer = self.timer - deltaTime * self.speed
 
     if self.timer > 0 then
         return
-    else
-        self.timer = self.timer - deltaTime * self.speed
     end
 
     -- Increment text characters
