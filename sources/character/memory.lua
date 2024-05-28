@@ -18,16 +18,16 @@ end
 ----------------------------------------------------------------
 function Memory:rate(byte)
 
-    local result = 0
+    local percentage = 0.0
 
     for i = 1, 7 do
         if self.short_term[i] == byte then
             local bias = i / 4
-            result = result + 1 * bias
+            percentage = percentage + 1 * bias
         end
     end
 
-    return result
+    return percentage
  
 end
 

@@ -10,31 +10,35 @@ local function getNoisedPitch(pitches, time, seed)
 
     local noise = love.math.noise(time / 4, seed)
 
-    ------------------------
+    ------------------------------------------------
     -- Adding variety for complex and catchy sounding
-    ------------------------
+    ------------------------------------------------
     local variety = love.math.noise(noise * 500, seed * (noise + 0.15)) * 6 - 3.5
 
     if time <= 2 then
         variety = math.random(-4, -2)
     end
 
-    ------------------------
+    ------------------------------------------------
     local index = (noise * #pitches) + variety
+    
+    -- clamp index
+    index = math.max(1, math.min(#pitches, index))
+
     -- print(string.format("%.2f : (%+.2f) = %s", noise * #pitches, variety, string.rep('#', index))) -- debug
 
-    return pitches[math.floor(math.max(1, math.min(#pitches, index)))]
+    return pitches[math.floor(index)]
 
 end
 
 
 ----------------------------------------------------------------
-local TextDialogue = {}
-TextDialogue.__index = TextDialogue
+local Dialogue = {}
+Dialogue.__index = Dialogue
 
 
 ----------------------------------------------------------------
-function TextDialogue:new(font_filename, sound_filename)
+function Dialogue:new(font_filename, sound_filename)
 
     local class   = {}
     class.color   = {0, 0, 0, 1}
@@ -55,7 +59,7 @@ end
 
 
 ----------------------------------------------------------------
-function TextDialogue:done()
+function Dialogue:done()
 
     return self.index >= #self.content
 
@@ -63,7 +67,7 @@ end
 
 
 ----------------------------------------------------------------
-function TextDialogue:play(text, charactersPerSecond)
+function Dialogue:play(text, charactersPerSecond)
 
     local _, wrappedText = self.font:getWrap(text, 640)
     wrappedText = table.concat(wrappedText, '\n'):gsub("% \n", '\n')
@@ -77,7 +81,7 @@ end
 
 
 ----------------------------------------------------------------
-function TextDialogue:setColor(red, green, blue, alpha)
+function Dialogue:setColor(red, green, blue, alpha)
 
     self.color[1] = red
     self.color[2] = green
@@ -88,7 +92,7 @@ end
 
 
 ----------------------------------------------------------------
-function TextDialogue:setMusicalScale(scale_name)
+function Dialogue:setMusicalScale(scale_name)
 
     self.pitches = Pitches[scale_name]
 
@@ -96,16 +100,16 @@ end
 
 
 ----------------------------------------------------------------
-function TextDialogue:update(deltaTime)
+function Dialogue:update(deltaTime)
 
     if self:done() then
         return
     end
 
-    self.timer = self.timer - deltaTime * self.speed
-
     if self.timer > 0 then
         return
+    else
+        self.timer = self.timer - deltaTime * self.speed
     end
 
     -- Increment text characters
@@ -137,7 +141,7 @@ end
 
 
 ----------------------------------------------------------------
-function TextDialogue:draw()
+function Dialogue:draw()
 
     local r, g, b, a = love.graphics.getColor()
 
@@ -151,4 +155,4 @@ function TextDialogue:draw()
 end
 
 
-return TextDialogue
+return Dialogue
