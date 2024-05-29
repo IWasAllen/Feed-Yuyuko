@@ -7,7 +7,7 @@ local function assert(condition, message)
 end
 
 local function default()
-    
+
 end
 
 
@@ -30,13 +30,19 @@ end
 
 
 ----------------------------------------------------------------
-function StateMachine:create(name, enterCallback, updateCallback)
+function StateMachine:create(name, callbacks)
 
     assert(self.states[name] == nil, "duplicate states name of " .. name)
 
-    self.states[name] = {}
-    self.states[name][1] = enterCallback or default
-    self.states[name][2] = updateCallback or default
+    self.states[name] = callbacks
+
+    if not callbacks["enter"] then  
+        callbacks["enter"] = default
+    end
+
+    if not callbacks["update"] then
+        callbacks["update"] = default
+    end
 
 end
 
@@ -45,7 +51,8 @@ end
 function StateMachine:change(name)
 
     self.active = name
-    self.states[self.active][1]()
+
+    self.states[self.active]["enter"]()
 
 end
 
@@ -53,7 +60,7 @@ end
 ----------------------------------------------------------------
 function StateMachine:update(deltaTime)
 
-    self.states[self.active][2](deltaTime)
+    self.states[self.active]["update"](deltaTime)
 
 end
 
