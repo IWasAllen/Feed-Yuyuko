@@ -23,7 +23,7 @@ end
 
 
 ----------------------------------------------------------------
-function Base:init(assetdir, resources_locations)
+function Base:load(assetdir, resources_locations)
 
     self.resources.locations = resources_locations
 
@@ -33,25 +33,6 @@ function Base:init(assetdir, resources_locations)
 
     self.resources.sprite_eyes   = SpriteHandler:new(assetdir .. "textures/eyes.png", 1024, 1024)
     self.resources.sprite_mouth  = SpriteHandler:new(assetdir .. "textures/mouths.png", 256, 256)
-
-    do -- load chewing sounds
-        local alias = "sound_chew_"
-
-        for i, v in pairs(love.filesystem.getDirectoryItems(assetdir .. "audio/chew")) do
-
-            -- load the sound file
-            local sound = love.audio.newSource(assetdir .. "audio/chew/" .. v, "static")
-            sound:setLooping(true)
-
-            -- store in resources
-            local filename = string.match(v, "(.+)%.") -- ignore file extension
-            self.resources[alias .. filename] = sound
-
-        end
-
-        -- load other food related sound
-        self.resources.sound_burp = love.audio.newSource(assetdir .. "audio/burp.wav", "static")
-    end
 
     -- Object Resources
     self.resources.tween_eyebrows = TweenHandler:new({0, 0, 0, 0, 0, math.rad(14)})

@@ -38,14 +38,14 @@ Dialogue.__index = Dialogue
 
 
 ----------------------------------------------------------------
-function Dialogue:new(font_filename, sound_filename)
+function Dialogue:new()
 
     local class   = {}
     class.color   = {0, 0, 0, 1}
-    class.font    = love.graphics.newFont(font_filename, 48)
+    class.font    = nil
     class.pitches = Pitches["whole"]
-    class.sound   = love.audio.newSource(sound_filename, "static")
-    class.text    = love.graphics.newText(class.font)
+    class.text    = nil
+    class.voice   = nil
 
     class.content = ""
     class.index   = 1
@@ -54,6 +54,20 @@ function Dialogue:new(font_filename, sound_filename)
 
     setmetatable(class, self)
     return class
+
+end
+
+
+----------------------------------------------------------------
+function Dialogue:load(font_filename, sound_filename, filter)
+
+    self.font = love.graphics.newFont(font_filename)
+
+    self.text = love.graphics.newText(self.font)    
+
+    self.voice = love.audio.newSource(sound_filename, "static")
+
+    self.font:setFilter(filter)
 
 end
 
@@ -129,13 +143,13 @@ function Dialogue:update(deltaTime)
 
     -- Play sound per character
     local seed = #self.content * string.byte(self.content)
-    self.sound:setPitch(getNoisedPitch(self.pitches, self.index, seed))
+    self.voice:setPitch(getNoisedPitch(self.pitches, self.index, seed))
 
     if self:done() then -- play final note on scale
         self.sound:setPitch(self.pitches[#self.pitches])
     end
 
-    self.sound:play()
+    self.voice:play()
 
 end
 
