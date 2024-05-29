@@ -44,11 +44,17 @@ function StateMachine:create(name, callbacks)
         callbacks["update"] = default
     end
 
+    if not callbacks["leave"] then
+        callbacks["leave"] = default
+    end
+
 end
 
 
 ----------------------------------------------------------------
 function StateMachine:change(name)
+
+    self.states[self.active]["leave"]()
 
     self.active = name
 
