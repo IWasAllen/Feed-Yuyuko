@@ -79,13 +79,9 @@ end
 ----------------------------------------------------------------
 function Spritesheet:stop()
 
+    self.column_x = 1
     self.speed = 0
     self.time = 0
-
-    -- Set initial frame (usually closer to 0)
-    local lowest = math.min(self.column_x, self.column_y)
-    self.column_x = lowest
-    self.column_y = lowest
 
     -- Remove itself from updating
     m_objset[self] = nil
