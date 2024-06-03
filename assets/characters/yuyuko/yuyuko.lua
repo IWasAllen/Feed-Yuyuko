@@ -8,11 +8,11 @@ local AbstractCharacter = require("sources/character/abstract")
 ----------------------------------------------------------------
 -- Private
 ----------------------------------------------------------------
-local m_texture_puke = love.graphics.newImage(dir .. "textures/puke.png")
-local m_texture_tears = love.graphics.newImage(dir .. "textures/tears.png")
-
 local m_particle_puke = love.graphics.newParticleSystem
 local m_particle_tears = love.graphics.newParticleSystem
+
+local m_sound_burp
+local m_chewing_sounds = {}
 
 
 ----------------------------------------------------------------
@@ -36,11 +36,11 @@ local Yuyuko = AbstractCharacter:new()
 
 
 ----------------------------------------------------------------
-function Yuyuko:init()
+function Yuyuko:load()
 
-    print("Yuyuko init() called!")
+    print("Yuyuko load() called!")
 
-    -- Initialize character resources
+    -- Load abstract character resources
     local resources_locations = {
         eyes          = {76, 276};
         mouth         = {430, 830};
@@ -48,7 +48,23 @@ function Yuyuko:init()
         right_eyebrow = {680, 470};
     }
 
-    AbstractCharacter.init(self, dir, resources_locations)
+    AbstractCharacter.load(self, dir, resources_locations)
+
+    -- Load chewing sounds
+    for i, v in pairs(love.filesystem.getDirectoryItems(dir .. "audio/chew")) do
+
+        -- load the sound file
+        local sound = love.audio.newSource(dir .. "audio/chew/" .. v, "static")
+        sound:setLooping(true)
+
+        -- store in resources
+        local filename = string.match(v, "(.+)%.") -- ignore file extension
+        m_chewing_sounds["sound_chew_" .. filename] = sound
+
+    end
+
+    -- load other food related sound
+    m_sound_burp = love.audio.newSource(dir .. "audio/burp.wav", "static")
 
     -- Load property and states of saved data
 
@@ -65,10 +81,11 @@ function love.keypressed(key, scancode, isrepeat)
      end
 
     if scancode == 'd' then
-
+        Yuyuko:chew(10.0, "slime")
     end
 
     if scancode == "space" then
+
     end
 
 end

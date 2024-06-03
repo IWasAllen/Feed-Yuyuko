@@ -1,15 +1,14 @@
-local Statemachine = require("sources/utils/statemachine")
-
 local Base     = require("sources/character/base")
 local Dialogue = require("sources/character/dialogue")
 local Memory   = require("sources/character/memory")
 
+local Statemachine = require("sources/utils/statemachine")
 
 
 ----------------------------------------------------------------
 -- Class
 ----------------------------------------------------------------
-local AbstractCharacter = Base:new()
+local AbstractCharacter = {}
 AbstractCharacter.__index = AbstractCharacter
 
 
@@ -17,7 +16,12 @@ AbstractCharacter.__index = AbstractCharacter
 function AbstractCharacter:new()
 
     local class = {}
+    self.resources = {}
+
+    class.base = Base:new()
+    class.dialogue = Dialogue:new()
     class.state = Statemachine:new()
+    class.memory = Memory:new()
 
     setmetatable(class, self)
     return class
@@ -26,45 +30,62 @@ end
 
 
 ----------------------------------------------------------------
-function AbstractCharacter:init(assetdir, resource_locations)
+function AbstractCharacter:load(assetdir, resource_locations)
 
-    Base.init(self, assetdir, resource_locations)
+    -- Character Body
+    self.base:load(assetdir, resource_locations)
 
     -- Character Dialogue
-    self.resources.dialogue = Dialogue:new(assetdir .. "dialogue/font.ttf", assetdir .. "dialogue/voice.wav")
-    self.resources.dialogue.font:setFilter("nearest", "nearest")
+    self.dialogue:load(assetdir .. "dialogue/font.ttf", assetdir .. "dialogue/voice.wav", "nearest")
 
     -- Character States
-    do -- Idle
-        self.state:create("idle", function()
+    self.state:create("idle", {
+
+        blink_cooldown = 10.0;
+
+        enter = function()
             print("idle!")
+            self:idle()
+        end;
 
-            self.resources.sprite_mouth:stop()
-            self:wobble(0.25, 0.50, 1.0)
-        end)
-    end
+    })
 
-    do -- Speaking
-        self.state:create("speaking", nil, function(deltaTime)
-            self.resources.dialogue:update(deltaTime)
+    self.state:create("speaking", {
 
-            if self.resources.dialogue:done() then
+        enter = function()
+            self.base.resources.sprite_mouth:play(2, 1, 0.5)
+            self.base:wobble(0.5, 2.0, 0.5)
+        end;
+
+        update = function(deltaTime)
+            if self.dialogue:done() then
                 self.state:change("idle")
             end
-        end)
-    end
+        end;
+
+    })
 
 end
 
+
+----------------------------------------------------------------
+function AbstractCharacter:idle()
+
+    -- Stop mouth animations
+    self.base.resources.sprite_mouth:stop()
+
+    -- Reset wobbling effect
+    self.base:wobble(0.25, 0.50, 1.0)
+
+
+end
 
 ----------------------------------------------------------------
 function AbstractCharacter:speak(text)
 
     self.state:change("speaking")
 
-    self.resources.dialogue:play(text, 32)
-    self.resources.sprite_mouth:play(2, 1, 0.5)
-    self:wobble(0.5, 2.0, 0.5)
+    self.dialogue:play(text, 32)
 
 end
 
@@ -74,7 +95,9 @@ function AbstractCharacter:update(deltaTime)
 
     self.state:update(deltaTime)
 
-    Base.update(AbstractCharacter, deltaTime)
+    self.base:update(deltaTime)
+
+    self.dialogue:update(deltaTime)
 
 end
 
@@ -82,14 +105,15 @@ end
 ----------------------------------------------------------------
 function AbstractCharacter:draw()
     
-    Base.draw(AbstractCharacter)
+    self.base:draw(AbstractCharacter)
     
     -- Drawing text dialogue
     love.graphics.push()
         love.graphics.translate(0, -196)
-        self.resources.dialogue:draw()
+        self.dialogue:draw()
     love.graphics.pop()
 
 end
+
 
 return AbstractCharacter

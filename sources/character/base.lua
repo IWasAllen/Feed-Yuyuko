@@ -78,9 +78,9 @@ end
 
 
 ----------------------------------------------------------------
-function Base:wobble(intensity, frequency, duration)
+function Base:wobble(intensity, frequency, transitionDuration)
 
-    self.resources.tween_wobble:play({wobble_intensity = intensity, wobble_frequency = frequency}, "circularOut", duration)
+    self.resources.tween_wobble:play({wobble_intensity = intensity, wobble_frequency = frequency}, "circularOut", transitionDuration)
 
 end
 

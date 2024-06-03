@@ -61,7 +61,7 @@ end
 ----------------------------------------------------------------
 function Dialogue:load(font_filename, sound_filename, filter)
 
-    self.font = love.graphics.newFont(font_filename)
+    self.font = love.graphics.newFont(font_filename, 48)
 
     self.text = love.graphics.newText(self.font)    
 
@@ -119,7 +119,7 @@ function Dialogue:update(deltaTime)
     if self:done() then
         return
     end
-    
+
     self.timer = self.timer - deltaTime * self.speed
 
     if self.timer > 0 then
@@ -143,10 +143,11 @@ function Dialogue:update(deltaTime)
 
     -- Play sound per character
     local seed = #self.content * string.byte(self.content)
+
     self.voice:setPitch(getNoisedPitch(self.pitches, self.index, seed))
 
     if self:done() then -- play final note on scale
-        self.sound:setPitch(self.pitches[#self.pitches])
+        self.voice:setPitch(self.pitches[#self.pitches])
     end
 
     self.voice:play()
