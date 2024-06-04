@@ -82,6 +82,11 @@ local English = {
         ["beg"] = {
             "Please!",
         },
+        ["cutoff"] = {
+            "-!",
+            "~-!",
+            "-!!"
+        },
         ["disgust"] = {
             "Blegh!",
             "Yuck!"
@@ -121,8 +126,8 @@ local English = {
 
 
 ----------------------------------------------------------------
-local function getRandomValue(array)
-    
+function English.getRandomValue(array)
+
     return array[math.random(1, #array)]
 
 end

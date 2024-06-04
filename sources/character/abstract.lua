@@ -44,8 +44,13 @@ function AbstractCharacter:load(assetdir, resource_locations)
         blink_cooldown = 10.0;
 
         enter = function()
-            print("idle!")
-            self:idle()
+            -- Stop mouth animations
+            self.base.resources.sprite_mouth:stop()
+
+            -- Reset wobbling effect
+            self.base:wobble(0.25, 0.50, 1.0)
+            
+            print("[DEBUG] Character state changed to idle!")
         end;
 
     })
@@ -62,6 +67,10 @@ function AbstractCharacter:load(assetdir, resource_locations)
                 self.state:change("idle")
             end
         end;
+        
+        leave = function()
+            self.dialogue:stop()
+        end
 
     })
 
@@ -71,14 +80,10 @@ end
 ----------------------------------------------------------------
 function AbstractCharacter:idle()
 
-    -- Stop mouth animations
-    self.base.resources.sprite_mouth:stop()
-
-    -- Reset wobbling effect
-    self.base:wobble(0.25, 0.50, 1.0)
-
+    self.state:change("idle")
 
 end
+
 
 ----------------------------------------------------------------
 function AbstractCharacter:speak(text)

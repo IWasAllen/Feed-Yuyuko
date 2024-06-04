@@ -1,6 +1,6 @@
 local dir = "assets/characters/yuyuko/"
 
-local Language = loadfile(dir .. "dialogue/english")
+local Language = require(dir .. "dialogue/english")
 
 local AbstractCharacter = require("sources/character/abstract")
 
@@ -13,6 +13,9 @@ local m_particle_tears = love.graphics.newParticleSystem
 
 local m_sound_burp
 local m_chewing_sounds = {}
+local m_chewing_soundref = nil -- current playing chewing sound to be stopped
+local m_chewing_timer = 0.00
+local m_chewing_duration = 0.00
 
 
 ----------------------------------------------------------------
@@ -38,9 +41,9 @@ local Yuyuko = AbstractCharacter:new()
 ----------------------------------------------------------------
 function Yuyuko:load()
 
-    print("Yuyuko load() called!")
-
-    -- Load abstract character resources
+    --------------------------------
+    -- Load super class
+    --------------------------------
     local resources_locations = {
         eyes          = {76, 276};
         mouth         = {430, 830};
@@ -50,23 +53,79 @@ function Yuyuko:load()
 
     AbstractCharacter.load(self, dir, resources_locations)
 
-    -- Load chewing sounds
+
+    --------------------------------
+    -- Load resources
+    --------------------------------
+    -- Eating sounds
     for i, v in pairs(love.filesystem.getDirectoryItems(dir .. "audio/chew")) do
 
         -- load the sound file
         local sound = love.audio.newSource(dir .. "audio/chew/" .. v, "static")
         sound:setLooping(true)
 
-        -- store in resources
-        local filename = string.match(v, "(.+)%.") -- ignore file extension
-        m_chewing_sounds["sound_chew_" .. filename] = sound
+        -- store in table
+        local filename = string.match(v, "(.+)%.") -- exclude file extension
+        m_chewing_sounds[filename] = sound
 
     end
 
-    -- load other food related sound
     m_sound_burp = love.audio.newSource(dir .. "audio/burp.wav", "static")
 
-    -- Load property and states of saved data
+    -- Chewing state
+    self.state:create("chewing", {
+
+        enter = function()
+            self.base:wobble(0.25, 3.0, 0.25)
+            self.base.resources.sprite_mouth:play(3, 5, 0.35)
+            
+            do -- inject dialogue text content
+                local content = self.dialogue.content
+                local index = self.dialogue.index
+
+                -- run if dialogue text is currently playing
+                if index >= #content then
+                    return
+                end
+
+                -- append cutoff phrase at the end
+                local cutoff = Language.getRandomValue(Language.interjections.cutoff)
+                self.dialogue.text:set(content:sub(1, index) .. cutoff)
+            end
+        end;
+
+        update = function(deltaTime)
+            m_chewing_timer = m_chewing_timer + deltaTime
+
+            if m_chewing_timer >= m_chewing_duration then
+                self:speak("Yum!")
+            end
+        end;
+
+        leave = function()
+            m_sound_burp:play()
+            m_chewing_soundref:stop()
+        end
+
+    })
+
+
+    --------------------------------
+    -- Load data
+    --------------------------------
+
+end
+
+
+----------------------------------------------------------------
+function Yuyuko:chew(duration, material)
+
+
+    m_chewing_duration = duration
+    m_chewing_timer = 0.00
+
+    m_chewing_soundref = m_chewing_sounds[material]
+    m_chewing_soundref:play()
 
 end
 
@@ -81,7 +140,7 @@ function love.keypressed(key, scancode, isrepeat)
      end
 
     if scancode == 'd' then
-        Yuyuko:chew(10.0, "slime")
+        Yuyuko:chew(0.5, "metal")
     end
 
     if scancode == "space" then
