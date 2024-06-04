@@ -52,6 +52,9 @@ function Dialogue:new()
     class.speed   = 1.0
     class.timer   = 1.0
 
+    class.fadeEnabled = false
+    class.fadeOpacity = 1.0
+
     setmetatable(class, self)
     return class
 
@@ -63,7 +66,7 @@ function Dialogue:load(font_filename, sound_filename, filter)
 
     self.font = love.graphics.newFont(font_filename, 48)
 
-    self.text = love.graphics.newText(self.font)    
+    self.text = love.graphics.newText(self.font)
 
     self.voice = love.audio.newSource(sound_filename, "static")
 
@@ -75,7 +78,7 @@ end
 ----------------------------------------------------------------
 function Dialogue:done()
 
-    return self.index >= #self.content
+    return self.index >= #self.content or self.fadeEnabled
 
 end
 
@@ -91,7 +94,19 @@ function Dialogue:play(text, charactersPerSecond)
     self.speed   = charactersPerSecond or self.speed
     self.timer   = 0
 
+    self.fadeEnabled = false
+    self.fadeOpacity = 4.0
+
 end
+
+
+----------------------------------------------------------------
+function Dialogue:stop()
+
+    self.fadeEnabled = true
+
+end
+
 
 
 ----------------------------------------------------------------
@@ -116,13 +131,19 @@ end
 ----------------------------------------------------------------
 function Dialogue:update(deltaTime)
 
+    -- Fading state
+    if self.fadeEnabled then
+        self.fadeOpacity = self.fadeOpacity - deltaTime
+        return
+    end
+
     if self:done() then
         return
     end
 
-    self.timer = self.timer - deltaTime * self.speed
-
+    -- Text characters increment delay
     if self.timer > 0 then
+        self.timer = self.timer - deltaTime * self.speed
         return
     end
 
@@ -161,7 +182,7 @@ function Dialogue:draw()
     local r, g, b, a = love.graphics.getColor()
 
     love.graphics.push()
-        love.graphics.setColor(unpack(self.color))
+        love.graphics.setColor(self.color[1], self.color[2], self.color[3], self.color[4] * self.fadeOpacity)
         love.graphics.translate(-self.text:getWidth() / 2, -self.text:getHeight() / 2) -- centering text
         love.graphics.draw(self.text)
         love.graphics.setColor(r, g, b, a)
