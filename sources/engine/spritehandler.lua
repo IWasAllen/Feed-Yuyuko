@@ -15,6 +15,8 @@ function Spritesheet:new(image_filename, frame_width, frame_height)
     class.column_x   = 1
     class.column_y   = 1
 
+    class.looped = false
+
     -- Slice each columns per each rows
     for i = 0, class.image:getHeight() - frame_height, frame_height do
         local row = i / frame_height + 1
@@ -43,6 +45,7 @@ Spritesheet.__call = function(self)
     -- Linear interpolation to get the current quad index
     local index = math.floor(self.column_x + (self.column_y - self.column_x) * self.time)
     
+    print(self.time, index)
     -- Shortcut for retrieving the image and quad for love.graphics.draw()
     return self.image, self.quads[self.column_row][index]
 
@@ -50,8 +53,19 @@ end
 
 
 ----------------------------------------------------------------
+function Spritesheet:once(start_column, end_column, duration)
+    
+    self:play(start_column, end_column, duration)
+    
+    self.looped = true
+
+end
+
+
+----------------------------------------------------------------
 function Spritesheet:play(start_column, end_column, duration)
 
+    self.looped = false
     self.time = 0
 
     -- Adding +1 for intended result occurring in lerp
@@ -93,7 +107,11 @@ end
 function Spritesheet.update(deltaTime)
 
     for i, v in pairs(m_objset) do
-        i.time = (i.time + deltaTime * i.speed) % 1
+        if not i.looped then
+            i.time = (i.time + deltaTime * i.speed) % 1
+        else
+            i.time = math.min(1, i.time + deltaTime * i.speed)
+        end
     end
 
 end
