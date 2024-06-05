@@ -39,6 +39,9 @@ function Base:load(assetdir, resources_locations)
     self.resources.tween_wobble = TweenHandler:new(self.misc)
 
     -- Miscellanous Resources
+    self.misc.blink_duration = 0.00
+    self.misc.blink_time = 0.00
+
     self.misc.wobble_intensity = 0.25
     self.misc.wobble_frequency = 0.50
     self.misc.wobble_time = 0.00
@@ -49,6 +52,17 @@ function Base:load(assetdir, resources_locations)
 
     self.cache.half_width = self.cache.width / 2
     self.cache.half_height = self.cache.height / 2
+
+end
+
+
+----------------------------------------------------------------
+function Base:blink(duration)
+
+    self.misc.blink_duration = duration or 0.1
+    self.misc.blink_time = 0
+    
+    self.resources.sprite_eyes:once(1, 3, 0.1)
 
 end
 
@@ -87,6 +101,15 @@ end
 
 ----------------------------------------------------------------
 function Base:update(deltaTime)
+
+    -- Blinking
+    if self.misc.blink_time < self.misc.blink_duration then
+        self.misc.blink_time = self.misc.blink_time + deltaTime
+        
+        if self.misc.blink_time >= self.misc.blink_duration then
+            self.resources.sprite_eyes:once(3, 1, 0.25)
+        end
+    end
 
     -- Wobble
     self.misc.wobble_time = self.misc.wobble_time + self.misc.wobble_frequency * deltaTime
