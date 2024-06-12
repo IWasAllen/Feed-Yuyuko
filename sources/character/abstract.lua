@@ -41,8 +41,6 @@ function AbstractCharacter:load(assetdir, resource_locations)
     -- Character States
     self.state:create("idle", {
 
-        blink_cooldown = 10.0;
-
         enter = function()
             -- Stop mouth animations
             self.base.resources.sprite_mouth:stop()

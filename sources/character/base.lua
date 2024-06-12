@@ -40,7 +40,8 @@ function Base:load(assetdir, resources_locations)
 
     -- Miscellanous Resources
     self.misc.blink_duration = 0.00
-    self.misc.blink_time = 0.00
+    self.misc.blink_time = 1.00
+    self.misc.blink_cooldown = 3.00
 
     self.misc.wobble_intensity = 0.25
     self.misc.wobble_frequency = 0.50
@@ -61,7 +62,7 @@ function Base:blink(duration)
 
     self.misc.blink_duration = duration or 0.1
     self.misc.blink_time = 0
-    
+
     self.resources.sprite_eyes:once(1, 3, 0.1)
 
 end
@@ -102,12 +103,23 @@ end
 ----------------------------------------------------------------
 function Base:update(deltaTime)
 
-    -- Blinking
+    -- Blinking Idle
+    if self.misc.blink_cooldown > 0 then
+        self.misc.blink_cooldown = self.misc.blink_cooldown - deltaTime
+    else
+        self.misc.blink_cooldown = 3.0
+
+        if math.random(1, 3) == 3 then
+            self:blink()
+        end
+    end
+
+    -- Blinking Animation
     if self.misc.blink_time < self.misc.blink_duration then
         self.misc.blink_time = self.misc.blink_time + deltaTime
         
         if self.misc.blink_time >= self.misc.blink_duration then
-            self.resources.sprite_eyes:once(3, 1, 0.25)
+            self.resources.sprite_eyes:once(3, 1, 0.20)
         end
     end
 
