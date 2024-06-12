@@ -44,8 +44,8 @@ Spritesheet.__call = function(self)
 
     -- Linear interpolation to get the current quad index
     local index = math.floor(self.column_x + (self.column_y - self.column_x) * self.time)
+
     
-    print(self.time, index)
     -- Shortcut for retrieving the image and quad for love.graphics.draw()
     return self.image, self.quads[self.column_row][index]
 
@@ -57,7 +57,7 @@ function Spritesheet:once(start_column, end_column, duration)
     
     self:play(start_column, end_column, duration)
     
-    self.looped = true
+    self.looped = false
 
 end
 
@@ -65,7 +65,7 @@ end
 ----------------------------------------------------------------
 function Spritesheet:play(start_column, end_column, duration)
 
-    self.looped = false
+    self.looped = true
     self.time = 0
 
     -- Adding +1 for intended result occurring in lerp
@@ -107,7 +107,7 @@ end
 function Spritesheet.update(deltaTime)
 
     for i, v in pairs(m_objset) do
-        if not i.looped then
+        if i.looped then
             i.time = (i.time + deltaTime * i.speed) % 1
         else
             i.time = math.min(1, i.time + deltaTime * i.speed)
