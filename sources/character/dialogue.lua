@@ -131,13 +131,8 @@ end
 ----------------------------------------------------------------
 function Dialogue:update(deltaTime)
 
-    -- Fading state
-    if self.fadeEnabled then
-        self.fadeOpacity = self.fadeOpacity - deltaTime
-        return
-    end
-
     if self:done() then
+        self.fadeOpacity = math.max(0, self.fadeOpacity - deltaTime)
         return
     end
 
