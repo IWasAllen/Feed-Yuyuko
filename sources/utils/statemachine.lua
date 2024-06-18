@@ -1,19 +1,9 @@
-local _oldassert = assert
-
-local function assert(condition, message)
-
-    _oldassert(condition, "[State Machine] " .. message)
-
-end
+local StateMachine = {}
+StateMachine.__index = StateMachine
 
 local function default()
 
 end
-
-
-----------------------------------------------------------------
-local StateMachine = {}
-StateMachine.__index = StateMachine
 
 
 ----------------------------------------------------------------
@@ -32,21 +22,13 @@ end
 ----------------------------------------------------------------
 function StateMachine:create(name, callbacks)
 
-    assert(self.states[name] == nil, "duplicate states name of " .. name)
-
+    assert(self.states[name] == nil, "duplicate state named '" .. name .. "'")
     self.states[name] = callbacks
 
-    if not callbacks["enter"] then  
-        callbacks["enter"] = default
-    end
-
-    if not callbacks["update"] then
-        callbacks["update"] = default
-    end
-
-    if not callbacks["leave"] then
-        callbacks["leave"] = default
-    end
+    -- Default empty callbacks
+    callbacks["enter"]  = callbacks["enter"] or default
+    callbacks["leave"]  = callbacks["leave"] or default
+    callbacks["update"] = callbacks["update"] or default
 
 end
 
@@ -67,7 +49,7 @@ end
 function StateMachine:update(deltaTime)
 
     self.states[self.active]["update"](deltaTime)
-
+    
 end
 
 
