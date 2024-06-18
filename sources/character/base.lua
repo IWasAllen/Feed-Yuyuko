@@ -43,8 +43,8 @@ function Base:load(assetdir, resources_locations)
     self.misc.blink_time = 1.00
     self.misc.blink_cooldown = 3.00
 
-    self.misc.wobble_intensity = 0.25
     self.misc.wobble_frequency = 0.50
+    self.misc.wobble_intensity = 0.25
     self.misc.wobble_time = 0.00
 
     -- Cache
@@ -93,9 +93,9 @@ end
 
 
 ----------------------------------------------------------------
-function Base:wobble(intensity, frequency, transitionDuration)
+function Base:wobble(frequency, intensity, transitionDuration)
 
-    self.resources.tween_wobble:play({wobble_intensity = intensity, wobble_frequency = frequency}, "circularOut", transitionDuration)
+    self.resources.tween_wobble:play({wobble_frequency = frequency, wobble_intensity = intensity}, "circularOut", transitionDuration)
 
 end
 
