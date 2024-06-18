@@ -108,7 +108,6 @@ function Dialogue:stop()
 end
 
 
-
 ----------------------------------------------------------------
 function Dialogue:setColor(red, green, blue, alpha)
 
@@ -164,6 +163,9 @@ function Dialogue:update(deltaTime)
 
     if self:done() then -- play final note on scale
         self.voice:setPitch(self.pitches[#self.pitches])
+        
+        self.voice:stop()
+        self.voice:play()
     end
 
     self.voice:play()
