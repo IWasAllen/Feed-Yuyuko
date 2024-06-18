@@ -17,11 +17,12 @@ function Spritesheet:new(image_filename, frame_width, frame_height)
 
     class.looped = false
 
-    -- Slice each columns per each rows
+    -- Iterate each columns
     for i = 0, class.image:getHeight() - frame_height, frame_height do
         local row = i / frame_height + 1
         class.quads[row] = {}
 
+        -- Slice each rows of the columns into quads
         for j = 0, class.image:getWidth() - frame_width, frame_width do
             table.insert(class.quads[row], love.graphics.newQuad(
                 j,
@@ -106,11 +107,11 @@ end
 ----------------------------------------------------------------
 function Spritesheet.update(deltaTime)
 
-    for i, v in pairs(m_objset) do
-        if i.looped then
-            i.time = (i.time + deltaTime * i.speed) % 1
+    for obj in pairs(m_objset) do
+        if obj.looped then
+            obj.time = (obj.time + deltaTime * obj.speed) % 1
         else
-            i.time = math.min(1, i.time + deltaTime * i.speed)
+            obj.time = math.min(1, obj.time + deltaTime * obj.speed)
         end
     end
 

@@ -299,16 +299,16 @@ end
 ----------------------------------------------------------------
 function TweenHandler.update(deltaTime)
 
-    for i, v in pairs(m_objset) do
-        local time = i.time + deltaTime * i.speed
-
+    for obj in pairs(m_objset) do
+        local time = obj.time + deltaTime * obj.speed
+        
         -- Tween Expiration
         if time >= 1 then
             time = 1
-            m_objset[i] = nil
+            m_objset[obj] = nil
         end
 
-        i:set(time)
+        obj:set(time)
     end
 
 end
