@@ -80,8 +80,6 @@ function Base:emotion(state)
     }
 
     local x1, y1, r1, x2, y2, r2, row = unpack(EnumEmotions[state])
-
-    -- Convert rotation variables from degrees to radians
     r1 = math.rad(r1)
     r2 = math.rad(r2)
 
