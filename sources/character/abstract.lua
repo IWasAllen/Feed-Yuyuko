@@ -46,7 +46,7 @@ function AbstractCharacter:load(assetdir, resource_locations)
             self.base.resources.sprite_mouth:stop()
 
             -- Reset wobbling effect
-            self.base:wobble(0.25, 0.50, 1.0)
+            self.base:wobble(0.50, 0.25, 1.00)
             
             print("[DEBUG] Character state changed to idle!")
         end;
@@ -57,7 +57,7 @@ function AbstractCharacter:load(assetdir, resource_locations)
 
         enter = function()
             self.base.resources.sprite_mouth:play(2, 1, 0.5)
-            self.base:wobble(0.5, 2.0, 0.5)
+            self.base:wobble(2.0, 0.5, 0.5)
         end;
 
         update = function(deltaTime)
@@ -65,9 +65,15 @@ function AbstractCharacter:load(assetdir, resource_locations)
                 self.state:change("idle")
             end
         end;
-        
+
         leave = function()
-            self.dialogue:stop()
+
+            -- cutoff
+            if not self.dialogue:done() then
+                local cutoff = "~!"
+                local content = string.sub(self.dialogue.content, 0, self.dialogue.index) .. cutoff
+                self.dialogue.content = content
+            end
         end
 
     })
