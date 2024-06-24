@@ -13,7 +13,7 @@ function Base:new()
 
     local class = {}
     class.cache = {}
-    class.resources = {locations = {}}
+    class.resources = {}
     class.misc = {}
 
     setmetatable(class, self)
@@ -36,12 +36,11 @@ function Base:load(assetdir, resources_locations)
 
     -- Object Resources
     self.resources.tween_eyebrows = TweenHandler:new({0, 0, 0, 0, 0, math.rad(14)})
-    self.resources.tween_wobble = TweenHandler:new(self.misc)
+    self.resources.tween_wobble   = TweenHandler:new(self.misc)
 
     -- Miscellanous Resources
-    self.misc.blink_duration = 0.00
-    self.misc.blink_time = 1.00
-    self.misc.blink_cooldown = 3.00
+    self.misc.blink_duration = 5.00
+    self.misc.blink_time = 0.00
 
     self.misc.wobble_frequency = 0.50
     self.misc.wobble_intensity = 0.25
@@ -101,23 +100,21 @@ end
 ----------------------------------------------------------------
 function Base:update(deltaTime)
 
-    -- Blinking Idle
-    if self.misc.blink_cooldown > 0 then
-        self.misc.blink_cooldown = self.misc.blink_cooldown - deltaTime
-    else
-        self.misc.blink_cooldown = 3.0
+    -- Blinking
+    self.misc.blink_time = self.misc.blink_time + deltaTime
 
-        if math.random(1, 3) == 3 then
+    if self.misc.blink_time > self.misc.blink_duration then
+
+        -- Open eyes
+        self.resources.sprite_eyes:once(3, 1, 0.2)
+
+        -- Random blinking
+        self.misc.blink_time = -math.random(1, 5) ^ 1.75 
+
+        if self.misc.blink_duration == 0 then
             self:blink()
-        end
-    end
-
-    -- Blinking Animation
-    if self.misc.blink_time < self.misc.blink_duration then
-        self.misc.blink_time = self.misc.blink_time + deltaTime
-        
-        if self.misc.blink_time >= self.misc.blink_duration then
-            self.resources.sprite_eyes:once(3, 1, 0.20)
+        else
+            self.misc.blink_duration = 0
         end
     end
 
