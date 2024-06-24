@@ -128,8 +128,8 @@ end
 function Base:draw()
 
      -- Wobbling Effect
-    local cycleX = math.sin(self.misc.wobble_time * math.pi * 2) * self.misc.wobble_intensity
-    local cycleY = -math.sin(self.misc.wobble_time * math.pi * 2) * self.misc.wobble_intensity
+    local wobbleX = math.sin(self.misc.wobble_time * math.pi * 2) * self.misc.wobble_intensity
+    local wobbleY = -math.sin(self.misc.wobble_time * math.pi * 2) * self.misc.wobble_intensity
 
     -- Drawing the base
     love.graphics.push()
@@ -140,8 +140,8 @@ function Base:draw()
         do -- Full Base Wobbling
 
             -- Normalize scale to 0.95 ~ 1.00
-            local scaleX = (cycleX + 19) / 20
-            local scaleY = (cycleY + 19) / 20
+            local scaleX = (wobbleX + 19) / 20
+            local scaleY = (wobbleY + 19) / 20
             
             local posX = self.cache.half_width + (-scaleX * self.cache.half_width)
             local posY = self.cache.height + (-scaleY * self.cache.height)
@@ -158,7 +158,7 @@ function Base:draw()
 
         -- Drawing Eyes
         love.graphics.push()
-            love.graphics.translate(0, -cycleY * 8) -- parallax wobbling
+            love.graphics.translate(0, -wobbleY * 8) -- parallax wobbling
             love.graphics.translate(unpack(self.resources.locations.eyes))
             love.graphics.draw(self.resources.sprite_eyes())
         love.graphics.pop()
@@ -168,7 +168,7 @@ function Base:draw()
 
             -- Left Eyebrow
             love.graphics.push()
-                love.graphics.translate(0, -cycleY * 16) -- parallax wobbling
+                love.graphics.translate(0, -wobbleY * 16) -- parallax wobbling
                 love.graphics.translate(unpack(self.resources.locations.left_eyebrow))
                 love.graphics.translate(tween_translations[1], tween_translations[2])
                 love.graphics.rotate(tween_translations[3])
@@ -177,7 +177,7 @@ function Base:draw()
 
             -- Right Eyebrow
             love.graphics.push()
-                love.graphics.translate(0, -cycleY * 16) -- parallax wobbling
+                love.graphics.translate(0, -wobbleY * 16) -- parallax wobbling
                 love.graphics.translate(unpack(self.resources.locations.right_eyebrow))
                 love.graphics.translate(tween_translations[4], tween_translations[5])
                 love.graphics.rotate(tween_translations[6])
@@ -187,7 +187,7 @@ function Base:draw()
 
         -- Drawing Mouth
         love.graphics.push()
-            love.graphics.translate(0, -cycleY * 4) -- parallax wobbling
+            love.graphics.translate(0, -wobbleY * 4) -- parallax wobbling
             love.graphics.translate(unpack(self.resources.locations.mouth))
             love.graphics.draw(self.resources.sprite_mouth())
         love.graphics.pop()
