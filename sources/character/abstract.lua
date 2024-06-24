@@ -16,8 +16,6 @@ AbstractCharacter.__index = AbstractCharacter
 function AbstractCharacter:new()
 
     local class = {}
-    self.resources = {}
-
     class.base = Base:new()
     class.dialogue = Dialogue:new()
     class.state = Statemachine:new()
@@ -67,8 +65,6 @@ function AbstractCharacter:load(assetdir, resource_locations)
         end;
 
         leave = function()
-
-            -- cutoff
             if not self.dialogue:done() then
                 local cutoff = "~!"
                 local content = string.sub(self.dialogue.content, 0, self.dialogue.index) .. cutoff
