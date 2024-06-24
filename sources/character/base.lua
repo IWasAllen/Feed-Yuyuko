@@ -59,10 +59,10 @@ end
 ----------------------------------------------------------------
 function Base:blink(duration)
 
-    self.misc.blink_duration = duration or 0.1
+    self.misc.blink_duration = duration or 0.125
     self.misc.blink_time = 0
 
-    self.resources.sprite_eyes:once(1, 3, 0.1)
+    self.resources.sprite_eyes:once(1, 3, 0.125)
 
 end
 
@@ -102,8 +102,8 @@ function Base:update(deltaTime)
 
     -- Blinking
     self.misc.blink_time = self.misc.blink_time + deltaTime
-
-    if self.misc.blink_time > self.misc.blink_duration then
+print(self.misc.blink_time, self.misc.blink_duration)
+    if self.misc.blink_time >= self.misc.blink_duration then
 
         -- Open eyes
         self.resources.sprite_eyes:once(3, 1, 0.2)
