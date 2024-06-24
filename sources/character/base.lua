@@ -102,7 +102,7 @@ function Base:update(deltaTime)
 
     -- Blinking
     self.misc.blink_time = self.misc.blink_time + deltaTime
-print(self.misc.blink_time, self.misc.blink_duration)
+
     if self.misc.blink_time >= self.misc.blink_duration then
 
         -- Open eyes
