@@ -1,8 +1,7 @@
+local Statemachine = require("sources/utils/statemachine")
 local Base     = require("sources/character/base")
 local Dialogue = require("sources/character/dialogue")
 local Memory   = require("sources/character/memory")
-
-local Statemachine = require("sources/utils/statemachine")
 
 
 ----------------------------------------------------------------
@@ -16,10 +15,10 @@ AbstractCharacter.__index = AbstractCharacter
 function AbstractCharacter:new()
 
     local class = {}
-    class.base = Base:new()
+    class.base     = Base:new()
     class.dialogue = Dialogue:new()
-    class.state = Statemachine:new()
-    class.memory = Memory:new()
+    class.state    = Statemachine:new()
+    class.memory   = Memory:new()
 
     setmetatable(class, self)
     return class
@@ -40,12 +39,11 @@ function AbstractCharacter:load(assetdir, resource_locations)
     self.state:create("idle", {
 
         enter = function()
-            -- Stop mouth animations
             self.base.resources.sprite_mouth:stop()
 
-            -- Reset wobbling effect
+            -- Reset wobbling effect to default
             self.base:wobble(0.50, 0.25, 1.00)
-            
+
             print("[DEBUG] Character state changed to idle!")
         end;
 
