@@ -219,7 +219,7 @@ end
 
 
 ----------------------------------------------------------------
--- Tween Class
+-- Class
 ----------------------------------------------------------------
 local TweenHandler, m_objset = {}, {}
 TweenHandler.__index = TweenHandler

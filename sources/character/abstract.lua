@@ -88,7 +88,7 @@ function AbstractCharacter:speak(text)
 
     self.state:change("speaking")
 
-    self.dialogue:play(text, 32)
+    self.dialogue:play(text, 36)
 
 end
 

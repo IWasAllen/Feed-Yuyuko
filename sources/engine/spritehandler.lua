@@ -94,8 +94,8 @@ end
 function Spritesheet:stop()
 
     self.column_x = 1
-    self.speed = 0
-    self.time = 0
+    self.speed    = 0
+    self.time     = 0
 
     -- Remove itself from updating
     m_objset[self] = nil

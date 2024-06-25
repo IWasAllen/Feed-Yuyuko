@@ -135,13 +135,13 @@ function Dialogue:update(deltaTime)
         return
     end
 
-    -- Text characters increment delay
+    -- Incrementing cooldown
     if self.timer > 0 then
         self.timer = self.timer - deltaTime * self.speed
         return
     end
 
-    -- Increment text characters
+    -- Increment a text character
     self.index = math.floor(self.index + 1 - self.timer)
     self.text:set(self.content:sub(1, self.index))
 
@@ -151,7 +151,7 @@ function Dialogue:update(deltaTime)
     if sub_char == '.' or sub_char == ',' or sub_char == '!' or sub_char == '?' then
         self.timer = 6
     elseif sub_char == ' ' then
-        self.timer = 3
+        self.timer = 2.5
     else
         self.timer = 1
     end
@@ -163,7 +163,7 @@ function Dialogue:update(deltaTime)
         local subtract = math.floor(magnitude ^ 1.33)
         self.voice:setPitch(self.pitches[#self.pitches - subtract])
     else
-        local seed = #self.content * string.byte(self.content)
+        local seed = (#self.content * string.byte(self.content))
         self.voice:setPitch(getNoisedPitch(self.pitches, self.index, seed))
     end
 

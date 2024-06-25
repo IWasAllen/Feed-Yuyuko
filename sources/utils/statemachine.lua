@@ -1,9 +1,7 @@
 local StateMachine = {}
 StateMachine.__index = StateMachine
 
-local function default()
-
-end
+local default = function() end
 
 
 ----------------------------------------------------------------
@@ -26,8 +24,8 @@ function StateMachine:create(name, callbacks)
     self.states[name] = callbacks
 
     -- Default empty callbacks
-    callbacks["enter"]  = callbacks["enter"] or default
-    callbacks["leave"]  = callbacks["leave"] or default
+    callbacks["enter"]  = callbacks["enter"]  or default
+    callbacks["leave"]  = callbacks["leave"]  or default
     callbacks["update"] = callbacks["update"] or default
 
 end
