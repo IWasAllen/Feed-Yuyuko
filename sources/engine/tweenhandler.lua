@@ -246,12 +246,11 @@ end
 ----------------------------------------------------------------
 function TweenHandler:play(goal, style, duration)
 
-    self.time = 0
-    self.speed = 1 / duration
-    self.style = style
-
     self.initial = {}
-    self.goal = goal
+    self.goal    = goal
+    self.speed   = 1 / duration
+    self.style   = style
+    self.time    = 0
 
     -- Copy the required initials from the subject
     local function recursive_copy(subject, initial, goal)
