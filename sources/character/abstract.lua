@@ -109,12 +109,12 @@ end
 
 ----------------------------------------------------------------
 function AbstractCharacter:draw()
-    
+
     self.base:draw(AbstractCharacter)
-    
+
     -- Drawing text dialogue
     love.graphics.push()
-        love.graphics.translate(0, -196)
+        love.graphics.translate(self.base.cache.half_width * self.base.settings.scale, -48)
         self.dialogue:draw()
     love.graphics.pop()
 

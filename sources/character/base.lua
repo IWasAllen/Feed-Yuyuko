@@ -12,9 +12,10 @@ Base.__index = Base
 function Base:new()
 
     local class = {}
-    class.cache = {}
+    class.cache     = {}
     class.resources = {}
-    class.misc = {}
+    class.settings  = {}
+    class.misc      = {}
 
     setmetatable(class, self)
     return class
@@ -23,18 +24,17 @@ end
 
 
 ----------------------------------------------------------------
-function Base:load(assetdir, resources_locations)
+function Base:load(assetdir, settings)
 
-    self.resources.locations = resources_locations
+    self.settings = settings
 
     -- Visual resources
-    self.resources.image_base    = love.graphics.newImage(assetdir .. "textures/base.png")
+    self.resources.image_body    = love.graphics.newImage(assetdir .. "textures/body.png")
     self.resources.image_eyebrow = love.graphics.newImage(assetdir .. "textures/eyebrow.png")
 
     self.resources.sprite_eyes   = SpriteHandler:new(assetdir .. "textures/eyes.png", 1024, 1024)
     self.resources.sprite_mouth  = SpriteHandler:new(assetdir .. "textures/mouths.png", 256, 256)
 
-    -- Object Resources
     self.resources.tween_eyebrows = TweenHandler:new({0, 0, 0, 0, 0, math.rad(14)})
     self.resources.tween_wobble   = TweenHandler:new(self.misc)
 
@@ -47,8 +47,8 @@ function Base:load(assetdir, resources_locations)
     self.misc.wobble_time = 0.00
 
     -- Cache
-    self.cache.width = self.resources.image_base:getWidth()
-    self.cache.height = self.resources.image_base:getHeight()
+    self.cache.width = self.resources.image_body:getWidth()
+    self.cache.height = self.resources.image_body:getHeight()
 
     self.cache.half_width = self.cache.width / 2
     self.cache.half_height = self.cache.height / 2
@@ -105,7 +105,7 @@ function Base:update(deltaTime)
 
     if self.misc.blink_time >= self.misc.blink_duration then
 
-        -- Open eyes
+        -- Opening eyes after blinking
         self.resources.sprite_eyes:once(3, 1, 0.2)
 
         -- Random blinking
@@ -118,7 +118,7 @@ function Base:update(deltaTime)
         end
     end
 
-    -- Wobble
+    -- Wobbling
     self.misc.wobble_time = self.misc.wobble_time + self.misc.wobble_frequency * deltaTime
 
 end
@@ -134,8 +134,7 @@ function Base:draw()
     -- Drawing the base
     love.graphics.push()
 
-        love.graphics.scale(0.25, 0.25)
-        love.graphics.translate(-self.cache.half_width, -self.cache.half_height) -- center to origin
+        love.graphics.scale(self.settings.scale)
 
         do -- Full Base Wobbling
 
@@ -152,14 +151,12 @@ function Base:draw()
         end
 
         -- Drawing Body
-        love.graphics.push()
-            love.graphics.draw(self.resources.image_base)
-        love.graphics.pop()
+        love.graphics.draw(self.resources.image_body)
 
         -- Drawing Eyes
         love.graphics.push()
             love.graphics.translate(0, -wobbleY * 8) -- parallax wobbling
-            love.graphics.translate(unpack(self.resources.locations.eyes))
+            love.graphics.translate(unpack(self.settings.eyes))
             love.graphics.draw(self.resources.sprite_eyes())
         love.graphics.pop()
 
@@ -169,7 +166,7 @@ function Base:draw()
             -- Left Eyebrow
             love.graphics.push()
                 love.graphics.translate(0, -wobbleY * 16) -- parallax wobbling
-                love.graphics.translate(unpack(self.resources.locations.left_eyebrow))
+                love.graphics.translate(unpack(self.settings.left_eyebrow))
                 love.graphics.translate(tween_translations[1], tween_translations[2])
                 love.graphics.rotate(tween_translations[3])
                 love.graphics.draw(self.resources.image_eyebrow)
@@ -178,7 +175,7 @@ function Base:draw()
             -- Right Eyebrow
             love.graphics.push()
                 love.graphics.translate(0, -wobbleY * 16) -- parallax wobbling
-                love.graphics.translate(unpack(self.resources.locations.right_eyebrow))
+                love.graphics.translate(unpack(self.settings.right_eyebrow))
                 love.graphics.translate(tween_translations[4], tween_translations[5])
                 love.graphics.rotate(tween_translations[6])
                 love.graphics.draw(self.resources.image_eyebrow)
@@ -188,7 +185,7 @@ function Base:draw()
         -- Drawing Mouth
         love.graphics.push()
             love.graphics.translate(0, -wobbleY * 4) -- parallax wobbling
-            love.graphics.translate(unpack(self.resources.locations.mouth))
+            love.graphics.translate(unpack(self.settings.mouth))
             love.graphics.draw(self.resources.sprite_mouth())
         love.graphics.pop()
 
