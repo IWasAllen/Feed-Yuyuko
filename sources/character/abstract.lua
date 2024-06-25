@@ -42,7 +42,7 @@ function AbstractCharacter:load(assetdir, resource_locations)
             self.base.resources.sprite_mouth:stop()
 
             -- Reset wobbling effect to default
-            self.base:wobble(0.50, 0.25, 1.00)
+            self.base:wobble(0.50, 0.25, 1.50)
 
             print("[DEBUG] Character state changed to idle!")
         end;
