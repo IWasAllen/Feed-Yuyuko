@@ -157,7 +157,7 @@ function Base:draw()
         love.graphics.push()
             love.graphics.translate(0, -wobbleY * 8) -- parallax wobbling
             love.graphics.translate(unpack(self.settings.eyes))
-            love.graphics.draw(self.resources.sprite_eyes())
+            self.resources.sprite_eyes:draw()
         love.graphics.pop()
 
         do -- Drawing Eyebrows
@@ -186,7 +186,7 @@ function Base:draw()
         love.graphics.push()
             love.graphics.translate(0, -wobbleY * 4) -- parallax wobbling
             love.graphics.translate(unpack(self.settings.mouth))
-            love.graphics.draw(self.resources.sprite_mouth())
+            self.resources.sprite_mouth:draw()
         love.graphics.pop()
 
     love.graphics.pop()
