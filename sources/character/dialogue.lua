@@ -87,7 +87,7 @@ end
 function Dialogue:play(text, charactersPerSecond)
 
     local _, wrappedText = self.font:getWrap(text, 640)
-    wrappedText = table.concat(wrappedText, '\n'):gsub("% \n", '\n')
+    wrappedText = table.concat(wrappedText, ' \n'):gsub("%\n", ' \n')
 
     self.content = wrappedText
     self.index   = 0
