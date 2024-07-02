@@ -178,8 +178,9 @@ function Dialogue:draw()
     local r, g, b, a = love.graphics.getColor()
 
     love.graphics.push()
-        love.graphics.setColor(self.color[1], self.color[2], self.color[3], self.color[4] * self.fadeOpacity)
         love.graphics.translate(-self.text:getWidth() / 2, -self.text:getHeight() / 2) -- centering text
+
+        love.graphics.setColor(self.color[1], self.color[2], self.color[3], self.color[4] * self.fadeOpacity)
         love.graphics.draw(self.text)
         love.graphics.setColor(r, g, b, a)
     love.graphics.pop()

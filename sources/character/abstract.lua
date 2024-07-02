@@ -1,4 +1,5 @@
 local Statemachine = require("sources/utils/statemachine")
+
 local Base     = require("sources/character/base")
 local Dialogue = require("sources/character/dialogue")
 local Memory   = require("sources/character/memory")

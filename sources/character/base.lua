@@ -40,17 +40,17 @@ function Base:load(assetdir, settings)
 
     -- Miscellanous Resources
     self.misc.blink_duration = 5.00
-    self.misc.blink_time = 0.00
+    self.misc.blink_time     = 0.00
 
     self.misc.wobble_frequency = 0.50
     self.misc.wobble_intensity = 0.25
-    self.misc.wobble_time = 0.00
+    self.misc.wobble_time      = 0.00
 
     -- Cache
-    self.cache.width = self.resources.image_body:getWidth()
+    self.cache.width  = self.resources.image_body:getWidth()
     self.cache.height = self.resources.image_body:getHeight()
 
-    self.cache.half_width = self.cache.width / 2
+    self.cache.half_width  = self.cache.width / 2
     self.cache.half_height = self.cache.height / 2
 
 end
@@ -71,18 +71,18 @@ end
 function Base:emotion(state)
 
     local EnumEmotions = {
-        happy   = {0, 0, 0, 0, 0, 14, 1};
-        neutral = {12, -4, 6, -24, 24, 6, 2};
-        sad     = {-24, 30, -8, 36, -2, 24, 3};
-        angry   = {36, -16, 12, -48, 42, -2, 4};
-        disgust = {-24, 48, -12, 48, 8, 32, 5};
+        happy   = {  0,   0,   0,   0,   0,  14,   1};
+        neutral = { 12,  -4,   6, -24,  24,   6,   2};
+        sad     = {-24,  30,  -8,  36,  -2,  24,   3};
+        angry   = { 36, -16,  12, -48,  42,  -2,   4};
+        disgust = {-24,  48, -12,  48,   8,  32,   5};
     }
 
     local x1, y1, r1, x2, y2, r2, row = unpack(EnumEmotions[state])
     r1 = math.rad(r1)
     r2 = math.rad(r2)
 
-    -- Play
+    -- Apply
     self.resources.sprite_mouth:row(row)
     self.resources.tween_eyebrows:play({x1, y1, r1, x2, y2, r2}, "backOut", 1.0)
 

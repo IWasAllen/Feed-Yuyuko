@@ -30,9 +30,7 @@ local m_particle_tears
 local m_sound_burp
 local m_sound_puke
 
-
-----------------------------------------------------------------
-local Bytes = {
+local m_bytes = {
     ["idle"]             = 0,
     ["left_short"]       = 1,
     ["left_medium"]      = 2,
@@ -145,7 +143,6 @@ function Yuyuko:load()
     m_sound_burp = love.audio.newSource(dir .. "audio/burp.wav", "static")
     m_sound_puke = love.audio.newSource(dir .. "audio/puke.wav", "static")
 
-
     -- Initialize Particles
     m_particle_puke = love.graphics.newParticleSystem(love.graphics.newImage(dir .. "textures/puke.png"))
     m_particle_puke:setColors(0.35, 0.5, 0.35, 0.6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0)
@@ -228,14 +225,12 @@ end
 function Yuyuko:draw()
 
     -- Drawing Character
-    love.graphics.push()
-        AbstractCharacter.draw(Yuyuko)
-    love.graphics.pop()
+    AbstractCharacter.draw(Yuyuko)
 
     -- Particles Emitter
     love.graphics.push()
 
-        -- mouth
+        -- puke
         love.graphics.push()
             love.graphics.translate(138, 252)
             love.graphics.draw(m_particle_puke)
@@ -269,15 +264,19 @@ end
 function love.keypressed(key, scancode, isrepeat)
 
     if scancode == 's' then
-        Yuyuko:speak("The quick brown fox jumps over the lazy dogs.")
+        Yuyuko:speak("The quick brown fox jumps over the quick brown fox jumps over!")
      end
 
     if scancode == 'c' then
-        Yuyuko:chew(0.5, "metal")
+        Yuyuko:chew(1, "metal")
+    end
+    
+    if scancode == "space" then
+        Yuyuko.base:blink()
     end
 
     if scancode == "1" then
-        Yuyuko:puke(2)
+        Yuyuko:puke(1)
     end
 
     if scancode == "2" then
@@ -286,6 +285,14 @@ function love.keypressed(key, scancode, isrepeat)
 
     if scancode == "3" then
         Yuyuko:cry(false)
+    end
+
+    if scancode == "4" then
+        Yuyuko.base:emotion("angry")
+    end
+
+    if scancode == "5" then
+        Yuyuko.base:emotion("happy")
     end
 
 end
