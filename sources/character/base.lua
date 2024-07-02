@@ -147,7 +147,6 @@ function Base:draw()
 
             love.graphics.translate(posX, posY)
             love.graphics.scale(scaleX, scaleY)
-
         end
 
         -- Drawing Body
