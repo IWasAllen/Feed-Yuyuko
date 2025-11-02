@@ -1,3 +1,6 @@
+# Note
+this is currently being reworked
+
 # Feed Yuyuko
 This is a game where you have to feed Yuyuko with actual files to prevent her starving. Drag and drop a file to the game to make her eat it. Make sure you don't starve her, or feed too much.
 
