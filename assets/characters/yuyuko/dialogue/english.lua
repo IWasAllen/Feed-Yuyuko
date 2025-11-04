@@ -1,4 +1,4 @@
-local English = {
+local Language = {
     ["phrases"] = {
         ["on_eat"] = {
             ["full"] = {
@@ -18,12 +18,17 @@ local English = {
             ["normal_file"] = {
                 "What a great file!",
                 "So delicious!",
-                "Fresh file, %savor%!"
+                "Fresh file, %savor%!",
+                "What a nice meal."
             },
             ["good_file"] = {
                 "%amaze%, I like that!",
                 "So yummy! I wan't more of it.",
-                "%amaze%, it's so good!"
+                "%amaze%, it's so good!",
+                "Very delicious!"
+            },
+            ["empty_file"] = {
+                
             }
         },
 
@@ -32,55 +37,59 @@ local English = {
             "Blaaeeuugghh!"
         },
 
-        ["few_occurence"] = {
-            ["on_eat"] = {
-                ["full"] = {
-                    "Stop feeding me!",
-                    "Stop it, I'm full already."    
+        ["on_frequency"] = {
+            ["low"] = {
+                ["on_eat"] = {
+                    ["full"] = {
+                        "Stop feeding me!",
+                        "Stop it, I'm full already."    
+                    },
+                    ["same_file"] = {
+                        "I want something else.",
+                        "Could I have a different food?"
+                    },
+                    ["bad_file"] = { -- minor scale
+                        "%whine%! I don't want such files. Stop it!",
+                        "%disgust%, you're teasing me aren't you?"
+                    },
+                    ["good_file"] = { -- blue scale
+                        "%amaze%, that was a great meal!",
+                        "%amaze%, good meals overload!",
+                        "%amaze%ahaahahaHha, %savor%~!"
+                    },
+                    ["empty_file"] = {
+                        "I want a big file.",
+                        "I do not want empty files.",
+                        "Those files are worthless."
+                    },
                 },
-                ["same_file"] = {
-                    "I want something else.",
-                    "Could I have a different file?"
-                },
-                ["bad_file"] = { -- minor scale
-                    "%whine%! I don't want such files. Stop it!",
-                    "%disgust%, you're teasing me aren't you?",
+            },
+
+            ["high"] = {
+                ["bad_file"] = {
+                    "%scream%! I don't want it I don't want iitt!",
+                    "%disgust%, what are you doing? %whine%!"
                 },
                 ["good_file"] = { -- blue scale
-                    "%amaze%, that was a great meal!",
-                    "%amaze%, good meals overload!",
-                    "%amaze%ahaahahaHha, %savor%~!"
+                "   %amaze%, t-too much yummy files!",
+                    "%scream%! Addiction!",
+                    "%scream%! I'm ..."
                 },
-                ["empty_file"] = {
-                    "I want a big file.",
-                    "I do not want empty files."
-                },
-            },
-        },
-
-        ["frequent_occurence"] = {
-            ["bad_file"] = { -- whole scale
-                "%scream%! I don't want it I don't want iitt!",
-                "%disgust%, what are you doing? %whine%!",
-            },
-            ["good_file"] = { -- blue scale
-                "%amaze%, t-too much yummy files!",
-                "%scream%! Addiction!",
             },
         },
     },
 
     ["interjections"] = {
         ["amaze"] = {
-            "Uwaah!",
-            "Waah!",
-            "Aawooww!"
+            "Uwaah",
+            "Waah",
+            "Aawooww"
         },
         ["appreciate"] = {
-            "Thanks!",
+            "Thanks",
         },
         ["beg"] = {
-            "Please!",
+            "Please",
         },
         ["cutoff"] = {
             "-!",
@@ -88,45 +97,44 @@ local English = {
             "-!!"
         },
         ["disgust"] = {
-            "Blegh!",
-            "Yuck!"
+            "Blegh",
+            "Yuck"
         },
         ["frustation"] = {
-            "Hmph.",
-            "Hmph!",
-            "Tsk."
+            "Hmph",
+            "Tsk"
         },
         ["laugh"] = {
-            "Hahahaha!",
-            "Ahahaa!",
-            "Hahah!"
+            "Hahahaha",
+            "Ahahaa",
+            "Hahah"
         },
         ["savor"] = {
-            "Yummy!",
-            "Mmm!",
-            "Yum!"
+            "Yummy",
+            "Mmm",
+            "Yum"
         },
         ["scream"] = {
-            "Aaaaaaahhhhh!",
-            "Aaaahhhh!",
-            "AAaaaaAAAaaaaAAhh!"
+            "Aaaaaaahhhhh",
+            "Aaaahhhh",
+            "AAaaaaAAAaaaaAAhh"
         },
         ["shyness"] = {
-            "Hehe.",
+            "Hehe",
             "Hehe~",
-            "Hehehe."
+            "Hehehe"
         },
         ["whine"] = {
-            "Waah!",
-            "Aaah!",
-            "Eaahh!"
+            "Waah",
+            "Aaah",
+            "Eaahh"
         }
     }
 }
 
 
 ----------------------------------------------------------------
-function English.getRandomValue(array)
+local function getRandomElement(array)
 
     return array[math.random(1, #array)]
 
@@ -134,23 +142,27 @@ end
 
 
 ----------------------------------------------------------------
-function English.castInterjection(str)
+local function castInterjection(str)
 
     for match in str:gmatch("%%(.-)%%") do
-        local phrase = getRandomValue(self.interjections[match])
+        local phrase = getRandomElement(self.interjections[match])
 
         phrase = phrase:sub(1, #phrase - 1) -- removes end punctuation
 
         str = str:gsub("%%" .. match .. "%%", phrase)
     end
 
+    return str
+
 end
 
 
 ----------------------------------------------------------------
-function English.getRandomPhrase(group)
+setmetatable(Language, {__call = print })
 
-    return castInterjection(getRandomPhrase(group))
+Language.__call = function(self, phrases)
+
+    return castInterjection(getRandomElement(phrases))
 
 end
 

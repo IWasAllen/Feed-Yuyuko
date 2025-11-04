@@ -1,34 +1,31 @@
---
 -- Yuyuko has 4 character states:
 --   - Idle
 --   - Speaking
 --   - Chewing
 --   - Puking
---
 
 local dir = "assets/characters/yuyuko/"
-
-local Language = require(dir .. "dialogue/english")
-
 local AbstractCharacter = require("sources/character/abstract")
+local Language = require(dir .. "dialogue/english")
 
 
 ----------------------------------------------------------------
 -- Private
 ----------------------------------------------------------------
-local m_chewing_sounds = {}
-local m_chewing_soundref = nil -- current playing chewing sound to be stopped
-local m_chewing_duration = 0.00
-local m_chewing_time = 0.00
+local m_chew_duration = 0.00
+local m_chew_time     = 0.00
 
-local m_puking_duration = 0.00
-local m_puking_time = 0.00
+local m_puke_duration = 0.00
+local m_puke_time     = 0.00
 
 local m_particle_puke
 local m_particle_tears
 
 local m_sound_burp
+local m_sound_chew
 local m_sound_puke
+
+local m_sounds_chew = {}
 
 local m_bytes = {
     ["idle"]             = 0,
@@ -60,6 +57,7 @@ function Yuyuko:load()
         mouth         = {430, 830};
         left_eyebrow  = {276, 476};
         right_eyebrow = {680, 470};
+
         scale = 0.25;
     }
 
@@ -74,16 +72,16 @@ function Yuyuko:load()
     self.state:create("chewing", {
 
         enter = function()
-            m_chewing_time = 0
+            m_chew_time = 0
 
             self.base.resources.sprite_mouth:play(3, 5, 0.35)
             self.base:wobble(3.75, 0.25, 0.125)
         end;
 
         update = function(deltaTime)
-            m_chewing_time = m_chewing_time + deltaTime
+            m_chew_time = m_chew_time + deltaTime
 
-            if m_chewing_time >= m_chewing_duration then
+            if m_chew_time >= m_chew_duration then
                 self.base:blink()
 
                 -- this will also leave this state
@@ -93,7 +91,7 @@ function Yuyuko:load()
         end;
 
         leave = function()
-            m_chewing_soundref:stop()
+            m_sound_chew:stop()
         end
 
     })
@@ -101,9 +99,9 @@ function Yuyuko:load()
     self.state:create("puking", {
 
         enter = function()
-            m_puking_time = 0
+            m_puke_time = 0
 
-            self.base:blink(m_puking_duration)            
+            self.base:blink(m_puke_duration)            
             self.base:emotion("disgust")
             self.base.resources.sprite_mouth:play(2, 2, 1)
             self.base:wobble(1.50, 3.00, 0.75)
@@ -113,9 +111,9 @@ function Yuyuko:load()
         end;
 
         update = function(deltaTime)
-            m_puking_time = m_puking_time + deltaTime
+            m_puke_time = m_puke_time + deltaTime
 
-            if m_puking_time >= m_puking_duration then
+            if m_puke_time >= m_puke_duration then
                 self.state:change("idle")
             end
         end;
@@ -136,7 +134,7 @@ function Yuyuko:load()
 
         -- store in table
         local filename = string.match(v, "(.+)%.") -- exclude file extension
-        m_chewing_sounds[filename] = sound
+        m_sounds_chew[filename] = sound
 
     end
 
@@ -175,11 +173,11 @@ end
 ----------------------------------------------------------------
 function Yuyuko:chew(duration, material)
 
-    m_chewing_duration = duration
+    m_chew_duration = duration
     self.state:change("chewing")
 
-    m_chewing_soundref = m_chewing_sounds[material]
-    m_chewing_soundref:play()
+    m_sound_chew = m_sounds_chew[material]
+    m_sound_chew:play()
 
 end
 
@@ -193,14 +191,14 @@ function Yuyuko:cry(enabled)
     else
         m_particle_tears:stop()
     end
-    
+
 end
 
 
 ----------------------------------------------------------------
 function Yuyuko:puke(duration)
 
-    m_puking_duration = duration or 1
+    m_puke_duration = duration or 1
     self.state:change("puking")
 
     m_sound_puke:stop()
@@ -227,25 +225,25 @@ function Yuyuko:draw()
     -- Drawing Character
     AbstractCharacter.draw(Yuyuko)
 
-    -- Particles Emitter
+    -- Drawing Particles Emitters
     love.graphics.push()
 
-        -- puke
+        -- Puke
         love.graphics.push()
             love.graphics.translate(138, 252)
             love.graphics.draw(m_particle_puke)
         love.graphics.pop()
 
-        -- left eye tears
+        -- Left Eye Tears
         love.graphics.push()
             love.graphics.translate(100, 212)
             love.graphics.draw(m_particle_tears)
-            
+
             love.graphics.scale(0.5, 0.75)
             love.graphics.draw(m_particle_tears)
         love.graphics.pop()
 
-        -- right eye tears
+        -- Right Eye Tears
         love.graphics.push()
             love.graphics.translate(192, 220)
             love.graphics.draw(m_particle_tears)
@@ -253,6 +251,7 @@ function Yuyuko:draw()
             love.graphics.scale(0.5, 0.75)
             love.graphics.draw(m_particle_tears)
         love.graphics.pop()
+
     love.graphics.pop()
 
 end
@@ -264,7 +263,7 @@ end
 function love.keypressed(key, scancode, isrepeat)
 
     if scancode == 's' then
-        Yuyuko:speak("The quick brown fox jumps over the quick brown fox jumps over!")
+        Yuyuko:speak("The quick brown fox jumps over the lazy dog!")
      end
 
     if scancode == 'c' then

@@ -28,13 +28,13 @@ end
 
 
 ----------------------------------------------------------------
-function AbstractCharacter:load(assetdir, resource_locations)
+function AbstractCharacter:load(resources_directory, base_settings)
 
     -- Character Body
-    self.base:load(assetdir, resource_locations)
+    self.base:load(resources_directory, base_settings)
 
     -- Character Dialogue
-    self.dialogue:load(assetdir .. "dialogue/font.ttf", assetdir .. "dialogue/voice.wav", "nearest")
+    self.dialogue:load(resources_directory .. "dialogue/font.ttf", resources_directory .. "dialogue/voice.wav", "nearest")
 
     -- Character States
     self.state:create("idle", {
@@ -48,7 +48,7 @@ function AbstractCharacter:load(assetdir, resource_locations)
             print("[DEBUG] Character state changed to idle!")
         end;
 
-    })
+    }, true)
 
     self.state:create("speaking", {
 
@@ -64,11 +64,7 @@ function AbstractCharacter:load(assetdir, resource_locations)
         end;
 
         leave = function()
-            if not self.dialogue:done() then
-                local cutoff = "~!"
-                local content = string.sub(self.dialogue.content, 0, self.dialogue.index) .. cutoff
-                self.dialogue.content = content
-            end
+            self.dialogue:stop()
         end
 
     })
@@ -109,6 +105,7 @@ end
 ----------------------------------------------------------------
 function AbstractCharacter:draw()
 
+    -- Drawing body
     self.base:draw(AbstractCharacter)
 
     -- Drawing text dialogue

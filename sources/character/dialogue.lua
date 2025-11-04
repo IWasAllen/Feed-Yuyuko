@@ -1,9 +1,9 @@
 local Pitches = {
-    major   = {1.00, 1.12, 1.25, 1.33, 1.49, 1.68, 1.88, 2.00};
-    minor   = {1.00, 1.12, 1.18, 1.33, 1.49, 1.58, 1.88, 2.00};
-    whole   = {1.00, 1.12, 1.25, 1.41, 1.58, 1.78, 2.00};
-    blues   = {1.00, 1.18, 1.33, 1.41, 1.49, 1.78, 2.00};
-    klezmer = {1.00, 1.05, 1.25, 1.33, 1.49, 1.58, 1.78, 2.00};
+    major   = {1.00, 1.12, 1.25, 1.33, 1.49, 1.68, 1.88, 2.00},
+    minor   = {1.00, 1.12, 1.18, 1.33, 1.49, 1.58, 1.88, 2.00},
+    whole   = {1.00, 1.12, 1.25, 1.41, 1.58, 1.78, 2.00},
+    blues   = {1.00, 1.18, 1.33, 1.41, 1.49, 1.78, 2.00},
+    klezmer = {1.00, 1.05, 1.25, 1.33, 1.49, 1.58, 1.78, 2.00}
 }
 
 local function getNoisedPitch(pitches, time, seed)
@@ -52,7 +52,6 @@ function Dialogue:new()
     class.speed   = 1.0
     class.timer   = 1.0
 
-    class.fadeEnabled = false
     class.fadeOpacity = 1.0
 
     setmetatable(class, self)
@@ -64,10 +63,8 @@ end
 ----------------------------------------------------------------
 function Dialogue:load(font_filename, sound_filename, filter)
 
-    self.font = love.graphics.newFont(font_filename, 48)
-
-    self.text = love.graphics.newText(self.font)
-
+    self.font  = love.graphics.newFont(font_filename, 48)
+    self.text  = love.graphics.newText(self.font)
     self.voice = love.audio.newSource(sound_filename, "static")
 
     self.font:setFilter(filter)
@@ -78,7 +75,7 @@ end
 ----------------------------------------------------------------
 function Dialogue:done()
 
-    return self.index >= #self.content or self.fadeEnabled
+    return self.index >= #self.content
 
 end
 
@@ -94,7 +91,6 @@ function Dialogue:play(text, charactersPerSecond)
     self.speed   = charactersPerSecond or self.speed
     self.timer   = 0
 
-    self.fadeEnabled = false
     self.fadeOpacity = 4.0
 
 end
@@ -103,7 +99,9 @@ end
 ----------------------------------------------------------------
 function Dialogue:stop()
 
-    self.fadeEnabled = true
+    if not self:done() then
+        self.content = string.sub(self.content, 0, self.index) .. "~!"
+    end
 
 end
 
@@ -111,10 +109,7 @@ end
 ----------------------------------------------------------------
 function Dialogue:setColor(red, green, blue, alpha)
 
-    self.color[1] = red
-    self.color[2] = green
-    self.color[3] = blue
-    self.color[4] = alpha
+    self.color = {red, green, blue, alpha}
 
 end
 
@@ -135,13 +130,13 @@ function Dialogue:update(deltaTime)
         return
     end
 
-    -- Incrementing cooldown
+    -- Cooldown text character
     if self.timer > 0 then
         self.timer = self.timer - deltaTime * self.speed
         return
     end
 
-    -- Increment a text character
+    -- Increment text character
     self.index = math.floor(self.index + 1 - self.timer)
     self.text:set(self.content:sub(1, self.index))
 
@@ -149,11 +144,11 @@ function Dialogue:update(deltaTime)
     local sub_char = self.content:sub(self.index, self.index)
 
     if sub_char == '.' or sub_char == ',' or sub_char == '!' or sub_char == '?' then
-        self.timer = 6
+        self.timer = 6.0 -- 6.0 seconds
     elseif sub_char == ' ' then
-        self.timer = 2.5
+        self.timer = 2.5 -- 2.5 seconds
     else
-        self.timer = 1
+        self.timer = 1.0 -- 1.0 seconds
     end
 
     -- Play sound per character
@@ -182,8 +177,9 @@ function Dialogue:draw()
 
         love.graphics.setColor(self.color[1], self.color[2], self.color[3], self.color[4] * self.fadeOpacity)
         love.graphics.draw(self.text)
-        love.graphics.setColor(r, g, b, a)
     love.graphics.pop()
+
+    love.graphics.setColor(r, g, b, a)
 
 end
 

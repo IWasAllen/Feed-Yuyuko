@@ -219,6 +219,23 @@ end
 
 
 ----------------------------------------------------------------
+local function deep_copy(subject, initial, goal)
+
+    for i, v in pairs(goal) do
+        assert(subject[i] ~= nil, string.format("attempt to tween unknown subject field at '%s'", i))
+        assert(type(subject[i]) == type(v), string.format("attempt to tween different types at '%s'", i))
+
+        if type(subject[i]) ~= "table" then
+            initial[i] = subject[i]
+        else
+            initial[i] = {}
+            recursive_copy(subject[i], initial[i], v)
+        end
+    end
+
+    end
+
+----------------------------------------------------------------
 -- Class
 ----------------------------------------------------------------
 local TweenHandler, m_objset = {}, {}
@@ -252,6 +269,7 @@ function TweenHandler:play(goal, style, duration)
     self.style   = style
     self.time    = 0
 
+print(goal, duration)
     -- Copy the required initials from the subject
     local function recursive_copy(subject, initial, goal)
         for i, v in pairs(goal) do
@@ -268,7 +286,7 @@ function TweenHandler:play(goal, style, duration)
     end
 
     recursive_copy(self.subject, self.initial, self.goal)
-
+print(unpack(self.initial))
     -- Add in the set to update it overtime
     m_objset[self] = true
 

@@ -24,16 +24,16 @@ end
 
 
 ----------------------------------------------------------------
-function Base:load(assetdir, settings)
+function Base:load(resources_directory, settings)
 
     self.settings = settings
 
-    -- Visual resources
-    self.resources.image_body    = love.graphics.newImage(assetdir .. "textures/body.png")
-    self.resources.image_eyebrow = love.graphics.newImage(assetdir .. "textures/eyebrow.png")
+    -- Visual Resources
+    self.resources.image_body    = love.graphics.newImage(resources_directory .. "textures/body.png")
+    self.resources.image_eyebrow = love.graphics.newImage(resources_directory .. "textures/eyebrow.png")
 
-    self.resources.sprite_eyes   = SpriteHandler:new(assetdir .. "textures/eyes.png", 1024, 1024)
-    self.resources.sprite_mouth  = SpriteHandler:new(assetdir .. "textures/mouths.png", 256, 256)
+    self.resources.sprite_eyes   = SpriteHandler:new(resources_directory .. "textures/eyes.png", 1024, 1024)
+    self.resources.sprite_mouth  = SpriteHandler:new(resources_directory .. "textures/mouths.png", 256, 256)
 
     self.resources.tween_eyebrows = TweenHandler:new({0, 0, 0, 0, 0, math.rad(14)})
     self.resources.tween_wobble   = TweenHandler:new(self.misc)
@@ -47,9 +47,8 @@ function Base:load(assetdir, settings)
     self.misc.wobble_time      = 0.00
 
     -- Cache
-    self.cache.width  = self.resources.image_body:getWidth()
-    self.cache.height = self.resources.image_body:getHeight()
-
+    self.cache.width       = self.resources.image_body:getWidth()
+    self.cache.height      = self.resources.image_body:getHeight()
     self.cache.half_width  = self.cache.width / 2
     self.cache.half_height = self.cache.height / 2
 
@@ -57,12 +56,12 @@ end
 
 
 ----------------------------------------------------------------
-function Base:blink(duration)
+function Base:blink(duration_seconds)
 
-    self.misc.blink_duration = duration or 0.125
+    self.misc.blink_duration = duration_seconds or 0.125
     self.misc.blink_time = 0
 
-    self.resources.sprite_eyes:once(1, 3, 0.125)
+    self.resources.sprite_eyes:play(1, 3, 0.125, false)
 
 end
 
@@ -71,19 +70,19 @@ end
 function Base:emotion(state)
 
     local EnumEmotions = {
-        happy   = {  0,   0,   0,   0,   0,  14,   1};
-        neutral = { 12,  -4,   6, -24,  24,   6,   2};
-        sad     = {-24,  30,  -8,  36,  -2,  24,   3};
-        angry   = { 36, -16,  12, -48,  42,  -2,   4};
-        disgust = {-24,  48, -12,  48,   8,  32,   5};
+        happy   = {  0,   0,   0,   0,   0,  14,  1};
+        neutral = { 12,  -4,   6, -24,  24,   6,  2};
+        sad     = {-24,  30,  -8,  36,  -2,  24,  3};
+        angry   = { 36, -16,  12, -48,  42,  -2,  4};
+        disgust = {-24,  48, -12,  48,   8,  32,  5};
     }
 
-    local x1, y1, r1, x2, y2, r2, row = unpack(EnumEmotions[state])
+    local x1, y1, r1, x2, y2, r2, column = unpack(EnumEmotions[state])
     r1 = math.rad(r1)
     r2 = math.rad(r2)
 
     -- Apply
-    self.resources.sprite_mouth:row(row)
+    self.resources.sprite_mouth:column(column)
     self.resources.tween_eyebrows:play({x1, y1, r1, x2, y2, r2}, "backOut", 1.0)
 
 end
@@ -105,8 +104,8 @@ function Base:update(deltaTime)
 
     if self.misc.blink_time >= self.misc.blink_duration then
 
-        -- Opening eyes after blinking
-        self.resources.sprite_eyes:once(3, 1, 0.2)
+        -- Opening eyes
+        self.resources.sprite_eyes:play(3, 1, 0.2, false)
 
         -- Random blinking
         self.misc.blink_time = -math.random(1, 5) ^ 1.75 
@@ -131,13 +130,13 @@ function Base:draw()
     local wobbleX = math.sin(self.misc.wobble_time * math.pi * 2) * self.misc.wobble_intensity
     local wobbleY = -math.sin(self.misc.wobble_time * math.pi * 2) * self.misc.wobble_intensity
 
-    -- Drawing the base
+    -- Drawing Character Base
     love.graphics.push()
 
         love.graphics.scale(self.settings.scale)
 
-        do -- Full Base Wobbling
-
+        -- Full Base Wobbling
+        do
             -- Normalize scale to 0.95 ~ 1.00
             local scaleX = (wobbleX + 19) / 20
             local scaleY = (wobbleY + 19) / 20
@@ -159,7 +158,8 @@ function Base:draw()
             self.resources.sprite_eyes:draw()
         love.graphics.pop()
 
-        do -- Drawing Eyebrows
+        -- Drawing Eyebrows
+        do
             local tween_translations = self.resources.tween_eyebrows.subject
 
             -- Left Eyebrow
