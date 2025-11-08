@@ -22,7 +22,6 @@ function Spritesheet:new(image_filename, frame_width, frame_height)
     for i = 0, class.image:getHeight() - frame_height, frame_height do
         local column = i / frame_height + 1
         class.quads[column] = {}
-        print(column)
 
         -- Slice each rows of the columns into quads
         for j = 0, class.image:getWidth() - frame_width, frame_width do
@@ -73,7 +72,7 @@ end
 ----------------------------------------------------------------
 function Spritesheet:stop()
 
-    self.column_x = 1    
+    self.column_x = 1
     self.time     = 0
 
     -- Remove itself from updating
@@ -97,7 +96,6 @@ end
 function Spritesheet.update(deltaTime)
 
     for obj in pairs(m_objset) do
-        print(obj.time)
 
         if obj.looped then
             obj.time = (obj.time + deltaTime * obj.speed) % 1
