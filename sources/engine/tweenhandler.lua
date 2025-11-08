@@ -1,171 +1,173 @@
 ----------------------------------------------------------------
 -- Easing functions below are based from easings.net
 ----------------------------------------------------------------
-local function sineIn(progress)
-    return 1 - math.cos((progress * math.pi) / 2)
+local function sineIn(time)
+    return 1 - math.cos((time * math.pi) / 2)
 end
 
 
 ----------------------------------------------------------------
-local function sineOut(progress)
-    return math.sin((progress * math.pi) / 2)
+local function sineOut(time)
+    return math.sin((time * math.pi) / 2)
 end
 
 
 ----------------------------------------------------------------
-local function sineInOut(progress)
-    return -(math.cos(progress * math.pi) - 1) / 2
+local function sineInOut(time)
+    return -(math.cos(time * math.pi) - 1) / 2
 end
 
 
 ----------------------------------------------------------------
-local function quadIn(progress)
-    return progress * progress
+local function quadIn(time)
+    return time * time
 end
 
 
 ----------------------------------------------------------------
-local function quadOut(progress)
-    return 1 - (1 - progress) * (1 - progress)
+local function quadOut(time)
+    return 1 - (1 - time) * (1 - time)
 end
 
 
 ----------------------------------------------------------------
-local function quadInOut(progress)
-    if progress < 0.5 then
-        return 2 * progress * progress
+local function quadInOut(time)
+    if time < 0.5 then
+        return 2 * time * time
     else
-        return 1 - math.pow(-2 * progress + 2, 2) / 2
+        return 1 - math.pow(-2 * time + 2, 2) / 2
     end
 end
 
 
 ----------------------------------------------------------------
-local function cubicIn(progress)
-    return progress * progress * progress
+local function cubicIn(time)
+    return time * time * time
 end
 
 
 ----------------------------------------------------------------
-local function cubicOut(progress)
-    return 1 - math.pow(1 - progress, 5)
+local function cubicOut(time)
+    return 1 - math.pow(1 - time, 5)
 end
 
 
 ----------------------------------------------------------------
-local function cubicInOut(progress)
-    if progress < 0.5 then
-        return 16 * math.pow(progress, 5)
+local function cubicInOut(time)
+    if time < 0.5 then
+        return 16 * math.pow(time, 5)
     else
-        return 1 - math.pow(-2 * progress + 2, 5) / 2
+        return 1 - math.pow(-2 * time + 2, 5) / 2
     end
 end
 
 
 ----------------------------------------------------------------
-local function quartIn(progress)
-    return math.pow(progress, 4)
+local function quartIn(time)
+    return math.pow(time, 4)
 end
 
 
 ----------------------------------------------------------------
-local function quartOut(progress)
-    return 1 - math.pow(1 - progress, 4)
+local function quartOut(time)
+    return 1 - math.pow(1 - time, 4)
 end
 
 
 ----------------------------------------------------------------
-local function quartInOut(progress)
-    if progress < 0.5 then
-        return 8 * math.pow(progress, 4)
+local function quartInOut(time)
+    if time < 0.5 then
+        return 8 * math.pow(time, 4)
     else
-        return 1 - math.pow(-2 * progress + 2, 4) / 2
+        return 1 - math.pow(-2 * time + 2, 4) / 2
     end
 end
 
 
 ----------------------------------------------------------------
-local function backIn(progress)
-    return 2.70158 * math.pow(progress, 3) - 1.70158 * progress * progress
+local function backIn(time)
+    return 2.70158 * math.pow(time, 3) - 1.70158 * time * time
 end
 
 
 ----------------------------------------------------------------
-local function backOut(progress)
-    return 2.70158 * math.pow(progress - 1, 3) + 1.70158 * math.pow(progress - 1, 2) + 1
+local function backOut(time)
+    return 2.70158 * math.pow(time - 1, 3) + 1.70158 * math.pow(time - 1, 2) + 1
 end
 
 
 ----------------------------------------------------------------
-local function backInOut(progress)
-    if progress < 0.5 then
-        return (math.pow(progress * 2, 2) * ((4.59491 + 1) * 2 * progress - 4.59491)) / 2
+local function backInOut(time)
+    if time < 0.5 then
+        return (math.pow(time * 2, 2) * ((4.59491 + 1) * 2 * time - 4.59491)) / 2
     else
-        return (math.pow(progress * 2 - 2, 2) * ((4.59491 + 1) * (progress * 2 - 2) + 4.59491) + 2) / 2
+        return (math.pow(time * 2 - 2, 2) * ((4.59491 + 1) * (time * 2 - 2) + 4.59491) + 2) / 2
     end
 end
 
 
 ----------------------------------------------------------------
-local function bounceIn(progress)
-    return 1 - bounceOut(1 - progress)
+local function bounceIn(time)
+    return 1 - bounceOut(1 - time)
 end
 
 
 ----------------------------------------------------------------
-local function bounceOut(progress)
+local function bounceOut(time)
     local n1 = 7.56250
     local d1 = 2.75000
 
-    if progress < 1 / d1 then
-        return n1 * progress * progress
-    elseif progress < 2 / d1 then
-        progress = progress - 1.5 / d1
-        return n1 * progress * progress + 0.75
-    elseif progress < 2.5 / d1 then
-        progress = progress - 2.25 / d1
-        return n1 * progress * progress + 0.9375
+    if time < 1 / d1 then
+        return n1 * time * time
+    elseif time < 2 / d1 then
+        time = time - 1.5 / d1
+        return n1 * time * time + 0.75
+    elseif time < 2.5 / d1 then
+        time = time - 2.25 / d1
+        return n1 * time * time + 0.9375
     else
-        progress = progress - 2.625 / d1
-        return n1 * progress * progress + 0.984375
+        time = time - 2.625 / d1
+        return n1 * time * time + 0.984375
     end
 end
 
 
 ----------------------------------------------------------------
-local function bounceInOut(progress)
-    if progress < 0.5 then
-        return (1 - bounceOut(1 - progress * 2)) / 2
+local function bounceInOut(time)
+    if time < 0.5 then
+        return (1 - bounceOut(1 - time * 2)) / 2
     else
-        return (1 + bounceOut(progress * 2 - 1)) / 2
+        return (1 + bounceOut(time * 2 - 1)) / 2
     end
 end
 
 
 ----------------------------------------------------------------
-local function circularIn(progress)
-    return 1 - math.sqrt(1 - progress * progress)
+local function circularIn(time)
+    return 1 - math.sqrt(1 - time * time)
 end
 
 
 ----------------------------------------------------------------
-local function circularOut(progress)
-    return math.sqrt(1 - math.pow(progress - 1, 2))
+local function circularOut(time)
+    return math.sqrt(1 - math.pow(time - 1, 2))
 end
 
 
 ----------------------------------------------------------------
-local function circularInOut(progress)
-    if progress < 0.5 then
-        return (1 - math.sqrt(1 - math.pow(progress * 2, 2))) / 2
+local function circularInOut(time)
+    if time < 0.5 then
+        return (1 - math.sqrt(1 - math.pow(time * 2, 2))) / 2
     else
-        return (math.sqrt(1 - math.pow(progress * -2 + 2, 2)) + 1) / 2
+        return (math.sqrt(1 - math.pow(time * -2 + 2, 2)) + 1) / 2
     end
 end
 
 
 ----------------------------------------------------------------
 local EnumStyles = {
+    linear        = function(x) return x end;
+
     sineIn        = sineIn;
     sineOut       = sineOut;
     sineInOut     = sineInOut;
@@ -193,47 +195,42 @@ local EnumStyles = {
     circularIn    = circularIn;
     circularOut   = circularOut;
     circularInOut = circularInOut;
-
-    linear      = function(x) return x end;
 }
 
 
 ----------------------------------------------------------------
 -- Helper Functions
 ----------------------------------------------------------------
-local _oldassert = assert
+local function deep_copy(object, filter)
 
-local function assert(condition, message)
+    if type(object) ~= "table" then
+        return object
+    end
 
-    _oldassert(condition, "[TweenHandler] " .. message)
+    local result = {}
+
+    for i, v in pairs(filter) do
+        assert(object[i], string.format("attempt to tween unknown subject field or index at '%s'", i));
+        result[i] = deep_copy(object[i])
+    end
+
+    return result
 
 end
 
-
 ----------------------------------------------------------------
-local function lerp(start, target, time, style)
+local function recursive_lerp(object, start, target, time)
 
-    return start + (target - start) * EnumStyles[style](time)
+    if type(object) ~= "table" then
+        return start + (target - start) * time -- lerp function
+    end
+
+    for i, v in pairs(target) do
+        object[i] = recursive_lerp(object[i], start[i], v, time)
+    end
 
 end
 
-
-----------------------------------------------------------------
-local function deep_copy(subject, initial, goal)
-
-    for i, v in pairs(goal) do
-        assert(subject[i] ~= nil, string.format("attempt to tween unknown subject field at '%s'", i))
-        assert(type(subject[i]) == type(v), string.format("attempt to tween different types at '%s'", i))
-
-        if type(subject[i]) ~= "table" then
-            initial[i] = subject[i]
-        else
-            initial[i] = {}
-            recursive_copy(subject[i], initial[i], v)
-        end
-    end
-
-    end
 
 ----------------------------------------------------------------
 -- Class
@@ -246,12 +243,13 @@ TweenHandler.__index = TweenHandler
 function TweenHandler:new(obj_reference)
 
     local class = {}
-    class.initial = {}
+
     class.goal    = {}
+    class.initial = {}
     class.subject = obj_reference
 
     class.speed = 1.0
-    class.style = "linear"
+    class.style = EnumStyles.linear
     class.time  = 0.0
 
     setmetatable(class, self)
@@ -263,30 +261,13 @@ end
 ----------------------------------------------------------------
 function TweenHandler:play(goal, style, duration)
 
-    self.initial = {}
     self.goal    = goal
+    self.initial = deep_copy(self.subject, goal)
+
     self.speed   = 1 / duration
-    self.style   = style
+    self.style   = EnumStyles[style]
     self.time    = 0
 
-print(goal, duration)
-    -- Copy the required initials from the subject
-    local function recursive_copy(subject, initial, goal)
-        for i, v in pairs(goal) do
-            assert(subject[i] ~= nil, string.format("attempt to tween unknown subject field at '%s'", i))
-            assert(type(subject[i]) == type(v), string.format("attempt to tween different types at '%s'", i))
-
-            if type(subject[i]) ~= "table" then
-                initial[i] = subject[i]
-            else
-                initial[i] = {}
-                recursive_copy(subject[i], initial[i], v)
-            end
-        end
-    end
-
-    recursive_copy(self.subject, self.initial, self.goal)
-print(unpack(self.initial))
     -- Add in the set to update it overtime
     m_objset[self] = true
 
@@ -298,17 +279,7 @@ function TweenHandler:set(time)
 
     self.time = time
 
-    local function recursive_lerp(subject, initial, goal)
-        for i, v in pairs(goal) do
-            if type(subject[i]) ~= "table" then
-                subject[i] = lerp(initial[i], v, time, self.style)
-            else
-                recursive_lerp(subject[i], initial[i], v)
-            end
-        end
-    end
-
-    recursive_lerp(self.subject, self.initial, self.goal)
+    recursive_lerp(self.subject, self.initial, self.goal, self.style(time))
 
 end
 
@@ -318,7 +289,7 @@ function TweenHandler.update(deltaTime)
 
     for obj in pairs(m_objset) do
         local time = obj.time + deltaTime * obj.speed
-        
+
         -- Tween Expiration
         if time >= 1 then
             time = 1
