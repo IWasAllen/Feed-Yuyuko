@@ -34,9 +34,23 @@ function love.load()
 
     Yuyuko:load()
 
-    -- cleanup initialized variables
+    -- Cleanup
+    love.timer.sleep(0.25)
     splash_image:release()
     collectgarbage("collect")
+
+end
+
+
+----------------------------------------------------------------
+function love.update(dt)
+
+    -- Game Engine Schedule
+    TweenHandler.update(dt)
+    SpriteHandler.update(dt)
+
+    -- Game Interface Update
+    Yuyuko:update(dt)
 
 end
 
@@ -55,19 +69,6 @@ function love.draw()
         Yuyuko:draw()
 
     love.graphics.pop()
-
-end
-
-
-----------------------------------------------------------------
-function love.update(dt)
-
-    -- Game Engine Schedule
-    TweenHandler.update(dt)
-    SpriteHandler.update(dt)
-
-    -- Game Interface Update
-    Yuyuko:update(dt)
 
 end
 
@@ -128,7 +129,7 @@ function dtime(restart)
 
 end
 
-function davgtime(restart)
+function davg(restart)
 
     local newTime = love.timer.getTime()
 
@@ -156,4 +157,42 @@ function davgtime(restart)
 
 end
 
+----------------------------------------------------------------
+-- Debug
+----------------------------------------------------------------
+function love.keypressed(key, scancode, isrepeat)
+
+    if scancode == 's' then
+        Yuyuko:speak("The quick brown fox jumps over the lazy dog!")
+     end
+
+    if scancode == 'c' then
+        Yuyuko:chew(1, "metal")
+    end
+    
+    if scancode == "space" then
+        Yuyuko.base:blink()
+    end
+
+    if scancode == "1" then
+        Yuyuko:puke(1)
+    end
+
+    if scancode == "2" then
+        Yuyuko:cry(true)
+    end
+
+    if scancode == "3" then
+        Yuyuko:cry(false)
+    end
+
+    if scancode == "6" then
+        Yuyuko.base:emotion("angry")
+    end
+
+    if scancode == "7" then
+        Yuyuko.base:emotion("happy")
+    end
+
+end
 

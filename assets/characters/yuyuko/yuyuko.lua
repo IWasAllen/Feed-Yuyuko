@@ -257,44 +257,4 @@ function Yuyuko:draw()
 end
 
 
-----------------------------------------------------------------
--- Debug
-----------------------------------------------------------------
-function love.keypressed(key, scancode, isrepeat)
-
-    if scancode == 's' then
-        Yuyuko:speak("The quick brown fox jumps over the lazy dog!")
-     end
-
-    if scancode == 'c' then
-        Yuyuko:chew(1, "metal")
-    end
-    
-    if scancode == "space" then
-        Yuyuko.base:blink()
-    end
-
-    if scancode == "1" then
-        Yuyuko:puke(1)
-    end
-
-    if scancode == "2" then
-        Yuyuko:cry(true)
-    end
-
-    if scancode == "3" then
-        Yuyuko:cry(false)
-    end
-
-    if scancode == "4" then
-        Yuyuko.base:emotion("angry")
-    end
-
-    if scancode == "5" then
-        Yuyuko.base:emotion("happy")
-    end
-
-end
-
-
 return Yuyuko
