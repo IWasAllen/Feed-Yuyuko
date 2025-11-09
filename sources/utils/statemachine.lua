@@ -1,7 +1,18 @@
+----------------------------------------------------------------
+-- Private
+----------------------------------------------------------------
+local function default()
+
+    return
+
+end
+
+
+----------------------------------------------------------------
+-- Class
+----------------------------------------------------------------
 local StateMachine = {}
 StateMachine.__index = StateMachine
-
-local default = function() end
 
 
 ----------------------------------------------------------------
@@ -9,7 +20,7 @@ function StateMachine:new()
 
     local class = {}
     class.states = {}
-    class.active = {}
+    class.active = nil
 
     setmetatable(class, self)
     return class
@@ -18,20 +29,21 @@ end
 
 
 ----------------------------------------------------------------
-function StateMachine:create(name, callbacks, isInitialState)
+function StateMachine:create(name, callbacks)
 
-    assert(self.states[name] == nil, "duplicate state named '" .. name .. "'")
+    assert(not self.states[name], string.format("attempt to create duplicate state called '%s'.", name))
 
     -- Initialize empty callbacks
     callbacks.enter  = callbacks.enter  or default
     callbacks.leave  = callbacks.leave  or default
     callbacks.update = callbacks.update or default
 
-    -- Set ID
+    -- Set id state
     self.states[name] = callbacks
-    
-    if isInitialState then
-        self.active = self.states[name]
+
+    -- Set initial state
+    if not self.active then
+        self.active = callbacks
     end
 
 end
@@ -41,7 +53,6 @@ end
 function StateMachine:change(name)
 
     self.active.leave()
-    print("[DEBUG] state changed to " .. name .. "!")
     self.active = self.states[name]
     self.active.enter()
 
@@ -52,7 +63,7 @@ end
 function StateMachine:update(deltaTime)
 
     self.active.update(deltaTime)
-    
+
 end
 
 
