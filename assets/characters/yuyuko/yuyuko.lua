@@ -68,64 +68,7 @@ function Yuyuko:load()
     -- Load Resources
     --------------------------------
 
-    -- State Machines
-    self.state:create("chewing", {
-
-        enter = function()
-            m_chew_time = 0
-
-            self.base.resources.sprite_mouth:play(3, 5, 0.35)
-            self.base:wobble(3.75, 0.25, 0.125)
-        end;
-
-        update = function(deltaTime)
-            m_chew_time = m_chew_time + deltaTime
-
-            if m_chew_time >= m_chew_duration then
-                self.base:blink()
-
-                -- this will also leave this state
-                m_sound_burp:play()
-                self:speak("Yum!")
-            end
-        end;
-
-        leave = function()
-            m_sound_chew:stop()
-        end
-
-    })
-
-    self.state:create("puking", {
-
-        enter = function()
-            m_puke_time = 0
-
-            self.base:blink(m_puke_duration)            
-            self.base:emotion("disgust")
-            self.base.resources.sprite_mouth:play(2, 2, 1)
-            self.base:wobble(1.50, 3.00, 0.75)
-
-            m_particle_puke:start()
-            m_particle_puke:emit(4)
-        end;
-
-        update = function(deltaTime)
-            m_puke_time = m_puke_time + deltaTime
-
-            if m_puke_time >= m_puke_duration then
-                self.state:change("idle")
-            end
-        end;
-
-        leave = function()
-            m_particle_puke:stop()
-        end;
-
-    })
-
-
-    -- Chewing & Eating Sounds
+    -- Chewing Sounds
     for i, v in pairs(love.filesystem.getDirectoryItems(dir .. "audio/chew")) do
 
         -- load the sound file
@@ -141,7 +84,7 @@ function Yuyuko:load()
     m_sound_burp = love.audio.newSource(dir .. "audio/burp.wav", "static")
     m_sound_puke = love.audio.newSource(dir .. "audio/puke.wav", "static")
 
-    -- Initialize Particles
+    -- Particles
     m_particle_puke = love.graphics.newParticleSystem(love.graphics.newImage(dir .. "textures/puke.png"))
     m_particle_puke:setColors(0.35, 0.5, 0.35, 0.6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0)
     m_particle_puke:setEmissionRate(16)
@@ -162,6 +105,81 @@ function Yuyuko:load()
     m_particle_tears:stop()
 
 
+    -- State Machines
+    self.state:create("chewing", {
+
+        --------------------------------
+        enter = function()
+    
+            m_chew_time = 0
+
+            self.base.resources.sprite_mouth:play(3, 5, 0.35)
+            self.base:wobble(3.75, 0.25, 0.125)
+
+        end;
+
+        --------------------------------
+        update = function(deltaTime)
+    
+            m_chew_time = m_chew_time + deltaTime
+
+            if m_chew_time >= m_chew_duration then
+                self.base:blink()
+
+                -- this will also leave this state
+                m_sound_burp:play()
+                self:speak("Yum!")
+            end
+
+        end;
+
+        --------------------------------
+        leave = function()
+
+            m_sound_chew:stop()
+
+        end;
+
+    })
+
+    self.state:create("vomiting", {
+
+        --------------------------------
+        enter = function()
+
+            m_puke_time = 0
+
+            self.base:blink(m_puke_duration)            
+            self.base:emotion("disgust")
+            self.base.resources.sprite_mouth:play(2, 2, 1)
+            self.base:wobble(1.50, 3.00, 0.75)
+
+            m_particle_puke:start()
+            m_particle_puke:emit(4)
+
+        end;
+
+        --------------------------------
+        update = function(deltaTime)
+
+            m_puke_time = m_puke_time + deltaTime
+
+            if m_puke_time >= m_puke_duration then
+                self.state:change("idle")
+            end
+
+        end;
+
+        --------------------------------
+        leave = function()
+
+            m_particle_puke:stop()
+
+        end;
+
+    })
+
+
     --------------------------------
     -- Load Data
     --------------------------------
@@ -172,7 +190,9 @@ end
 
 ----------------------------------------------------------------
 function Yuyuko:chew(duration, material)
-
+    
+    -- rename this method to :eat(filename)
+    
     m_chew_duration = duration
     self.state:change("chewing")
 
@@ -199,10 +219,12 @@ end
 function Yuyuko:puke(duration)
 
     m_puke_duration = duration or 1
-    self.state:change("puking")
+    self.state:change("vomiting")
 
     m_sound_puke:stop()
     m_sound_puke:play()
+    
+    -- system for puking the files out of the stomach
 
 end
 
@@ -222,10 +244,10 @@ end
 ----------------------------------------------------------------
 function Yuyuko:draw()
 
-    -- Drawing Character
+    -- Draw Character
     AbstractCharacter.draw(Yuyuko)
 
-    -- Drawing Particles Emitters
+    -- Draw Particles
     love.graphics.push()
 
         -- Puke
@@ -234,7 +256,7 @@ function Yuyuko:draw()
             love.graphics.draw(m_particle_puke)
         love.graphics.pop()
 
-        -- Left Eye Tears
+        -- Left Tears
         love.graphics.push()
             love.graphics.translate(100, 212)
             love.graphics.draw(m_particle_tears)
@@ -243,7 +265,7 @@ function Yuyuko:draw()
             love.graphics.draw(m_particle_tears)
         love.graphics.pop()
 
-        -- Right Eye Tears
+        -- Right Tears
         love.graphics.push()
             love.graphics.translate(192, 220)
             love.graphics.draw(m_particle_tears)
