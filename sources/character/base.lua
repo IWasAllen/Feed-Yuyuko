@@ -56,9 +56,9 @@ end
 
 
 ----------------------------------------------------------------
-function Base:blink(duration_seconds)
+function Base:blink(duration)
 
-    self.misc.blink_duration = duration_seconds or 0.125
+    self.misc.blink_duration = duration or 0.125
     self.misc.blink_time = 0
 
     self.resources.sprite_eyes:play(1, 3, 0.125, false)
@@ -70,11 +70,11 @@ end
 function Base:emotion(state)
 
     local EnumEmotions = {
-        happy   = {  0,   0,   0,   0,   0,  14,  1};
-        neutral = { 12,  -4,   6, -24,  24,   6,  2};
-        sad     = {-24,  30,  -8,  36,  -2,  24,  3};
-        angry   = { 36, -16,  12, -48,  42,  -2,  4};
-        disgust = {-24,  48, -12,  48,   8,  32,  5};
+        happy   = {  0,   0,   0,   0,   0,  14,   1};
+        neutral = { 12,  -4,   6, -24,  24,   6,   2};
+        sad     = {-24,  30,  -8,  36,  -2,  24,   3};
+        angry   = { 36, -16,  12, -48,  42,  -2,   4};
+        disgust = {-24,  48, -12,  48,   8,  32,   5};
     }
 
     local x1, y1, r1, x2, y2, r2, column = unpack(EnumEmotions[state])
@@ -126,7 +126,6 @@ end
 ----------------------------------------------------------------
 function Base:draw()
 
-     -- Wobbling Effect
     local wobbleX = math.sin(self.misc.wobble_time * math.pi * 2) * self.misc.wobble_intensity
     local wobbleY = -math.sin(self.misc.wobble_time * math.pi * 2) * self.misc.wobble_intensity
 
@@ -135,7 +134,7 @@ function Base:draw()
 
         love.graphics.scale(self.settings.scale)
 
-        -- Full Base Wobbling
+        -- Main Wobbling
         do
             -- Normalize scale to 0.95 ~ 1.00
             local scaleX = (wobbleX + 19) / 20

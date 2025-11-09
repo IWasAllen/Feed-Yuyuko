@@ -4,11 +4,9 @@ local TweenHandler = require("sources/engine/tweenhandler")
 
 local Yuyuko = require("assets/characters/yuyuko/yuyuko")
 
-
 -- TODO:
--- neural network one: updates emotion, inputs file history time, etc
--- neural network two: updates puking or crying state, inputs emotion history. anger + huge nausea = puke i guess
--- diet bar
+-- dialogue
+-- diet bar (in the future)
 
 ----------------------------------------------------------------
 function love.load()
@@ -35,7 +33,7 @@ function love.load()
     Yuyuko:load()
 
     -- Cleanup
-    love.timer.sleep(0.25)
+    -- love.timer.sleep(0.25)
     splash_image:release()
     collectgarbage("collect")
 

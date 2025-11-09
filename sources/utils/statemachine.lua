@@ -27,7 +27,7 @@ function StateMachine:create(name, callbacks, isInitialState)
     callbacks.leave  = callbacks.leave  or default
     callbacks.update = callbacks.update or default
 
-    -- Set state
+    -- Set ID
     self.states[name] = callbacks
     
     if isInitialState then
@@ -41,6 +41,7 @@ end
 function StateMachine:change(name)
 
     self.active.leave()
+    print("[DEBUG] state changed to " .. name .. "!")
     self.active = self.states[name]
     self.active.enter()
 

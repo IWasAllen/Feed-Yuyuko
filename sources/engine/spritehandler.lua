@@ -84,7 +84,7 @@ end
 ----------------------------------------------------------------
 function Spritesheet:draw()
 
-    -- Calculate the row index by time using linear interpolation
+    -- Calculate the row index by time with lerp function
     local row = math.floor(self.column_x + (self.column_y - self.column_x) * self.time)
 
     love.graphics.draw(self.image, self.quads[self.column_index][row])
@@ -96,7 +96,6 @@ end
 function Spritesheet.update(deltaTime)
 
     for obj in pairs(m_objset) do
-
         if obj.looped then
             obj.time = (obj.time + deltaTime * obj.speed) % 1
         else
