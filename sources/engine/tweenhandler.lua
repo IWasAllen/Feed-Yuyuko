@@ -210,8 +210,10 @@ local function deep_copy(object, filter)
     local result = {}
 
     for i, v in pairs(filter) do
-        assert(object[i], string.format("attempt to tween unknown subject field or index at '%s'", i));
-        result[i] = deep_copy(object[i])
+        assert(object[i], string.format("attempt to tween unknown subject field or index at '%s'", i))
+        assert(type(object[i]) == type(v), string.format("attempt to tween different types with '%s' and '%s'", object[i], v))
+
+        result[i] = deep_copy(object[i], v)
     end
 
     return result
@@ -228,6 +230,8 @@ local function recursive_lerp(object, start, target, time)
     for i, v in pairs(target) do
         object[i] = recursive_lerp(object[i], start[i], v, time)
     end
+
+    return object
 
 end
 
@@ -264,9 +268,9 @@ function TweenHandler:play(goal, style, duration)
     self.goal    = goal
     self.initial = deep_copy(self.subject, goal)
 
-    self.speed   = 1 / duration
-    self.style   = EnumStyles[style]
-    self.time    = 0
+    self.speed  = 1 / duration
+    self.style  = EnumStyles[style]
+    self.time   = 0
 
     -- Add in the set to update it overtime
     m_objset[self] = true
