@@ -77,12 +77,12 @@ function Base:emotion(state)
         disgust = {-24,  48, -12,  48,   8,  32,   5};
     }
 
-    local x1, y1, r1, x2, y2, r2, column = unpack(EnumEmotions[state])
+    local x1, y1, r1, x2, y2, r2, row = unpack(EnumEmotions[state])
     r1 = math.rad(r1)
     r2 = math.rad(r2)
 
     -- Apply
-    self.resources.sprite_mouth:column(column)
+    self.resources.sprite_mouth:row(row)
     self.resources.tween_eyebrows:play({x1, y1, r1, x2, y2, r2}, "backOut", 1.0)
 
 end
@@ -91,7 +91,10 @@ end
 ----------------------------------------------------------------
 function Base:wobble(frequency, intensity, transitionDuration)
 
-    self.resources.tween_wobble:play({wobble_frequency = frequency, wobble_intensity = intensity}, "circularOut", transitionDuration)
+    self.resources.tween_wobble:play({
+            wobble_frequency = frequency,
+            wobble_intensity = intensity
+        }, "circularOut", transitionDuration)
 
 end
 
@@ -124,7 +127,7 @@ end
 
 
 ----------------------------------------------------------------
-function Base:draw()
+function Base:draw()    
 
     local wobbleX = math.sin(self.misc.wobble_time * math.pi * 2) * self.misc.wobble_intensity
     local wobbleY = -math.sin(self.misc.wobble_time * math.pi * 2) * self.misc.wobble_intensity

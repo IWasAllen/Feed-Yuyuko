@@ -17,18 +17,18 @@ function SpriteHandler:new(filename, frame_width, frame_height)
     class.speed  = 0.0
     class.time   = 0.0
 
-    class.column_index = 1
-    class.column_x     = 1
-    class.column_y     = 1
+    class.column_row = 1
+    class.column_x   = 1
+    class.column_y   = 1
 
-    -- Iterate each columns
+    -- Iterate each rows
     for y = 0, class.image:getHeight() - frame_height, frame_height do
-        local column = y / frame_height + 1
-        class.quads[column] = {}
+        local row = y / frame_height + 1
+        class.quads[row] = {}
 
-        -- Slice each rows of the columns into quads
+        -- Slice each columns into quads
         for x = 0, class.image:getWidth() - frame_width, frame_width do
-            table.insert(class.quads[column], love.graphics.newQuad(
+            table.insert(class.quads[row], love.graphics.newQuad(
                 x,
                 y,
                 frame_width,
@@ -65,9 +65,9 @@ end
 
 
 ----------------------------------------------------------------
-function SpriteHandler:column(index)
+function SpriteHandler:row(index)
 
-    self.column_index = index
+    self.column_row = index
 
 end
 
@@ -107,10 +107,10 @@ end
 ----------------------------------------------------------------
 function SpriteHandler:draw()
 
-    -- Calculate the row index by time with lerp function
-    local row = math.floor(self.column_x + (self.column_y - self.column_x) * self.time)
+    -- Calculate the column index by time with lerp function
+    local column = math.floor(self.column_x + (self.column_y - self.column_x) * self.time)
 
-    love.graphics.draw(self.image, self.quads[self.column_index][row])
+    love.graphics.draw(self.image, self.quads[self.column_row][column])
 
 end
 

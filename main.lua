@@ -156,8 +156,10 @@ function davg(restart)
 end
 
 ----------------------------------------------------------------
--- Debug
+-- Yuyuko Debug
 ----------------------------------------------------------------
+local toggle_cry = false
+
 function love.keypressed(key, scancode, isrepeat)
 
     if scancode == 's' then
@@ -177,11 +179,13 @@ function love.keypressed(key, scancode, isrepeat)
     end
 
     if scancode == "2" then
-        Yuyuko:cry(true)
+        toggle_cry = not toggle_cry
+        
+        Yuyuko:cry(toggle_cry)
     end
 
-    if scancode == "3" then
-        Yuyuko:cry(false)
+    if scancode == "5" then
+        Yuyuko.base:emotion("sad")
     end
 
     if scancode == "6" then
