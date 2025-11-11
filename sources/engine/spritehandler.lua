@@ -48,15 +48,12 @@ end
 function SpriteHandler:play(start_column, end_column, duration, isLooped)
 
     self.looped = isLooped ~= false
+    self.speed = 1 / duration
     self.time = 0
 
-    -- Adding (+1) to see all frames when using lerp (0.9999 so it doesn't index array out of bounds; [n + 1 -> n + 0.9999])
+    -- Adding (+1) to see the final frame when using lerp (0.9999 is used to avoid array out of bounds)
     self.column_x = start_column + (start_column > end_column and 0.9999 or 0)
     self.column_y = end_column + (start_column < end_column and 0.9999 or 0)
-
-    if duration then
-        self.speed = 1 / duration
-    end
 
     -- Add in the set to update it overtime
     m_objset[self] = true
