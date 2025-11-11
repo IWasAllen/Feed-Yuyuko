@@ -1,13 +1,16 @@
-local Spritesheet, m_objset = {}, {}
-Spritesheet.__index = Spritesheet
+----------------------------------------------------------------
+-- Class
+----------------------------------------------------------------
+local SpriteHandler, m_objset = {}, {}
+SpriteHandler.__index = SpriteHandler
 
 
 ----------------------------------------------------------------
-function Spritesheet:new(image_filename, frame_width, frame_height)
+function SpriteHandler:new(filename, frame_width, frame_height)
 
     local class = {}
 
-    class.image = love.graphics.newImage(image_filename)
+    class.image = love.graphics.newImage(filename)
     class.quads = {}
 
     class.looped = false
@@ -19,15 +22,15 @@ function Spritesheet:new(image_filename, frame_width, frame_height)
     class.column_y     = 1
 
     -- Iterate each columns
-    for i = 0, class.image:getHeight() - frame_height, frame_height do
-        local column = i / frame_height + 1
+    for y = 0, class.image:getHeight() - frame_height, frame_height do
+        local column = y / frame_height + 1
         class.quads[column] = {}
 
         -- Slice each rows of the columns into quads
-        for j = 0, class.image:getWidth() - frame_width, frame_width do
+        for x = 0, class.image:getWidth() - frame_width, frame_width do
             table.insert(class.quads[column], love.graphics.newQuad(
-                j,
-                i,
+                x,
+                y,
                 frame_width,
                 frame_height,
                 class.image
@@ -42,7 +45,7 @@ end
 
 
 ----------------------------------------------------------------
-function Spritesheet:play(start_column, end_column, duration, isLooped)
+function SpriteHandler:play(start_column, end_column, duration, isLooped)
 
     self.looped = isLooped ~= false
     self.time = 0
@@ -62,7 +65,7 @@ end
 
 
 ----------------------------------------------------------------
-function Spritesheet:column(index)
+function SpriteHandler:column(index)
 
     self.column_index = index
 
@@ -70,10 +73,10 @@ end
 
 
 ----------------------------------------------------------------
-function Spritesheet:stop()
+function SpriteHandler:stop()
 
     self.column_x = 1
-    self.time     = 0
+    self.time = 0
 
     -- Remove itself from updating
     m_objset[self] = nil
@@ -82,18 +85,7 @@ end
 
 
 ----------------------------------------------------------------
-function Spritesheet:draw()
-
-    -- Calculate the row index by time with lerp function
-    local row = math.floor(self.column_x + (self.column_y - self.column_x) * self.time)
-
-    love.graphics.draw(self.image, self.quads[self.column_index][row])
-
-end
-
-
-----------------------------------------------------------------
-function Spritesheet.update(deltaTime)
+function SpriteHandler.update(deltaTime)
 
     for obj in pairs(m_objset) do
         if obj.looped then
@@ -101,7 +93,7 @@ function Spritesheet.update(deltaTime)
         else
             obj.time = obj.time + deltaTime * obj.speed
 
-            -- Remove
+            -- Expiration
             if obj.time > 1 then
                 obj.time = 1
                 m_objset[obj] = nil
@@ -112,4 +104,15 @@ function Spritesheet.update(deltaTime)
 end
 
 
-return Spritesheet
+----------------------------------------------------------------
+function SpriteHandler:draw()
+
+    -- Calculate the row index by time with lerp function
+    local row = math.floor(self.column_x + (self.column_y - self.column_x) * self.time)
+
+    love.graphics.draw(self.image, self.quads[self.column_index][row])
+
+end
+
+
+return SpriteHandler

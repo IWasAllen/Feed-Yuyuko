@@ -165,6 +165,8 @@ end
 
 
 ----------------------------------------------------------------
+-- Private
+----------------------------------------------------------------
 local EnumStyles = {
     linear        = function(x) return x end;
 
@@ -199,8 +201,6 @@ local EnumStyles = {
 
 
 ----------------------------------------------------------------
--- Helper Functions
-----------------------------------------------------------------
 local function deep_copy(object, filter)
 
     if type(object) ~= "table" then
@@ -210,8 +210,13 @@ local function deep_copy(object, filter)
     local result = {}
 
     for i, v in pairs(filter) do
-        assert(object[i], string.format("attempt to tween unknown subject field or index at '%s'", i))
-        assert(type(object[i]) == type(v), string.format("attempt to tween different types with '%s' and '%s'", object[i], v))
+        if not object[i] then
+            error(string.format("attempt to tween unknown subject field or index at '%s'", i))
+        end
+
+        if type(object[i]) ~= type(v) then
+            error(string.format("attempt to tween different types with '%s' and '%s'", object[i], v))
+        end
 
         result[i] = deep_copy(object[i], v)
     end
@@ -219,6 +224,7 @@ local function deep_copy(object, filter)
     return result
 
 end
+
 
 ----------------------------------------------------------------
 local function recursive_lerp(object, start, target, time)
@@ -268,9 +274,9 @@ function TweenHandler:play(goal, style, duration)
     self.goal    = goal
     self.initial = deep_copy(self.subject, goal)
 
-    self.speed  = 1 / duration
-    self.style  = EnumStyles[style]
-    self.time   = 0
+    self.speed = 1 / duration
+    self.style = EnumStyles[style]
+    self.time  = 0
 
     -- Add in the set to update it overtime
     m_objset[self] = true
@@ -294,7 +300,7 @@ function TweenHandler.update(deltaTime)
     for obj in pairs(m_objset) do
         local time = obj.time + deltaTime * obj.speed
 
-        -- Tween Expiration
+        -- Expiration
         if time >= 1 then
             time = 1
             m_objset[obj] = nil
