@@ -168,8 +168,6 @@ end
 -- Private
 ----------------------------------------------------------------
 local EnumStyles = {
-    linear        = function(x) return x end;
-
     sineIn        = sineIn;
     sineOut       = sineOut;
     sineInOut     = sineInOut;
@@ -197,6 +195,8 @@ local EnumStyles = {
     circularIn    = circularIn;
     circularOut   = circularOut;
     circularInOut = circularInOut;
+    
+    linear        = function(x) return x end;
 }
 
 
@@ -245,25 +245,42 @@ end
 ----------------------------------------------------------------
 -- Class
 ----------------------------------------------------------------
-local TweenHandler, m_objset = {}, {}
+local TweenHandler, objset = {}, {}
 TweenHandler.__index = TweenHandler
 
 
 ----------------------------------------------------------------
-function TweenHandler:new(obj_reference)
+function TweenHandler.new(tbl)
 
-    local class = {}
+    local self = setmetatable({}, TweenHandler)
 
-    class.goal    = {}
-    class.initial = {}
-    class.subject = obj_reference
+    self.goal    = {}
+    self.initial = {}
+    self.subject = tbl
 
-    class.speed = 1.0
-    class.style = EnumStyles.linear
-    class.time  = 0.0
+    self.speed = 1.0
+    self.style = EnumStyles.linear
+    self.time  = 0.0
 
-    setmetatable(class, self)
-    return class
+    return self
+
+end
+
+
+----------------------------------------------------------------
+function TweenHandler.update(deltaTime)
+
+    for obj in pairs(objset) do
+        local time = obj.time + deltaTime * obj.speed
+
+        -- Expiration
+        if time > 1 then
+            time = 1
+            objset[obj] = nil
+        end
+
+        obj:set(time)
+    end
 
 end
 
@@ -274,12 +291,12 @@ function TweenHandler:play(goal, style, duration)
     self.goal    = goal
     self.initial = deep_copy(self.subject, goal)
 
-    self.speed = 1 / duration
-    self.style = EnumStyles[style]
+    self.speed = 1 / (duration or 1)
+    self.style = EnumStyles[style or "linear"]
     self.time  = 0
 
-    -- Add in the set to update it overtime
-    m_objset[self] = true
+    -- Add in the object set to update it overtime
+    objset[self] = true
 
 end
 
@@ -290,24 +307,6 @@ function TweenHandler:set(time)
     self.time = time
 
     recursive_lerp(self.subject, self.initial, self.goal, self.style(time))
-
-end
-
-
-----------------------------------------------------------------
-function TweenHandler.update(deltaTime)
-
-    for obj in pairs(m_objset) do
-        local time = obj.time + deltaTime * obj.speed
-
-        -- Expiration
-        if time >= 1 then
-            time = 1
-            m_objset[obj] = nil
-        end
-
-        obj:set(time)
-    end
 
 end
 
